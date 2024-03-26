@@ -1,0 +1,33 @@
+﻿@page "/learnblazor/bindprop"
+
+<div>
+    <h1>BindProp</h1>
+    <h1>Hello You</h1>
+</div>
+@if (Loading == true)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <p>Name : @Product.Name</p>
+    <p>Active : @Product.IsActive</p>
+}
+
+@code {
+    bool Loading = true;
+
+    // protected override async Task OnAfterRenderAsync()
+    // {
+    //     await Task.Delay(5000);
+    //     Loading = false;
+    // }
+
+    Demo_Product Product = new()
+        {
+            Id = 1,
+            Name = "Rose Candle",
+            Price = 10.99,
+            IsActive = true
+        };
+}
