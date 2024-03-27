@@ -1,32 +1,39 @@
 ﻿@page "/learnBlazor/demoproduct"
 
 <h3>DemoProduct</h3>
+<p>Favorites Total = @FavoriteTotal</p>
 
 <div class="row">
     @foreach (var prod in Products)
     {
-        <_IndividualProduct prod="@prod" />
+        <_IndividualProduct prod="@prod" OnFavCheck="@FavCheck" />
     }
 </div>
 
 @code {
     List<Demo_Product> Products = new();
+    int FavoriteTotal = 0;
     protected override void OnInitialized()
     {
         for (int i = 1; i < 5; i++)
         {
             Products.Add(new()
-                {
-                    Id = i,
-                    Name = "Flavor" + i,
-                    IsActive = i%2==0 ? true : false,
-                    ProductProperties = new List<Demo_ProductProp>()
-                {
-                    new Demo_ProductProp { Id = 1, Key = "Flavor", Value = "Rose"},
-                    new Demo_ProductProp { Id = 2, Key = "Size", Value = "20oz"},
-                    new Demo_ProductProp { Id = 3, Key = "Color", Value="Purple" }
-                }
-                });
+            {
+                Id = i,
+                Name = "Flavor" + i,
+                IsActive = i%2==0 ? true : false,
+                ProductProperties = new List<Demo_ProductProp>()
+            {
+                new Demo_ProductProp { Id = 1, Key = "Flavor", Value = "Rose"},
+                new Demo_ProductProp { Id = 2, Key = "Size", Value = "20oz"},
+                new Demo_ProductProp { Id = 3, Key = "Color", Value="Purple" }
+            }
+            });
         }
+    }
+    void FavCheck(bool chk)
+    {
+        if (chk) FavoriteTotal++;
+        else FavoriteTotal--;
     }
 }

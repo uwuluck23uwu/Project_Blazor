@@ -1,5 +1,6 @@
 ﻿<div class="card m-2" style="width: 18rem;">
     <div class="card-body">
+        <input type="checkbox" onchange="@FavUpdate" /> Add to favorite
         <h5 class="card-title">ID @prod.Id</h5>
         <p class="card-text">Name : @prod.Name</p>
         <p>
@@ -19,5 +20,10 @@
 @code {
     [Parameter]
     public Demo_Product prod { get; set; }
-
+    [Parameter]
+    public EventCallback<bool> OnFavCheck { get; set; }
+    public async Task FavUpdate(ChangeEventArgs changeEventArgs)
+    {
+        await OnFavCheck.InvokeAsync((bool)changeEventArgs.Value);
+    }
 }
