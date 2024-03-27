@@ -1,12 +1,14 @@
-﻿h1 {
+﻿p {
+    margin-bottom: auto;
+}
+h1 {
     font-style: italic;
 }
-div {
+.title {
     background: #474bff;
     background: -webkit-linear-gradient(0deg, #474bff 0%, #bc48ff 100%);
     background: linear-gradient(0deg, #474bff 0%, #bc48ff 100%);
 }
-
 .spinner {
     width: 56px;
     height: 56px;

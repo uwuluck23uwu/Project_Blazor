@@ -1,33 +1,115 @@
 ﻿@page "/learnblazor/bindprop"
 
-<div>
+<div class="title">
     <h1>BindProp</h1>
     <h1>Hello You</h1>
 </div>
-@if (Loading == true)
+<div class="row border border-5 rounded m-6">
+    <div class="col-6 p-2">
+        Active : <input type="checkbox" @bind-value="Product.IsActive" checked="@Product.IsActive" />
+        <br />
+        Price : <input type="number" min="0" @bind-value="Product.Price" @bind-value:event="oninput" />
+        <br/>
+        Product Properties :
+        <InputSelect @bind-Value="selectedProp">
+            @foreach (var prop in Product.ProductProperties)
+            {
+                <option value="@prop.Key">@prop.Value</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="col-6">
+        <p>Name : @Product.Name</p>
+        <p>Active : @Product.IsActive</p>
+        <p>This product is : @(Product.IsActive ? "Active" : "IsActive")</p>
+        <p>Price : @Product.Price</p>
+        <p>Property Selected : @selectedProp</p>
+        @if (!String.IsNullOrWhiteSpace(selectedProp))
+        {
+            <p>
+                Property Value : @Product.ProductProperties.FirstOrDefault(u => u.Key == selectedProp).Value
+            </p>
+        }
+    </div>
+    <div>
+        <table class="table table-striped">
+            <tbody>
+                @foreach (var prop in Products)
+                {
+                    <tr>
+                        <tb>
+                            <input type="text" @bind-value="prop.Name" @bind-value:event="oninput" />
+                        </tb>
+                        <tb>
+                            <input type="number" @bind-value="prop.Price" @bind-value:event="oninput" />
+                        </tb>
+                        <tb>
+                            <input type="checkbox" @bind-value="prop.IsActive" checked="@prop.IsActive" />
+                        </tb>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h3>Summary</h3>
+        @foreach(var prod in Products)
+        {
+            <p>@prod.Name [@prod.Price] @(prod.IsActive ? "Active" : "IsActive")</p>
+        }
+    </div>
+</div>
+
+@code {
+    private string selectedProp = "";
+
+    Demo_Product Product = new()
+    {
+        Id = 1,
+        Name = "Rose Candle",
+        IsActive = true,
+        ProductProperties = new List<Demo_ProductProp>()
+        {
+            new Demo_ProductProp { Id = 1, Key = "Color", Value="Black"},
+            new Demo_ProductProp { Id = 2, Key = "Flavor", Value = "RoseJasmine" },
+            new Demo_ProductProp { Id = 3, Key = "Size", Value = "20oz"}
+        }
+    };
+
+    List<Demo_Product> Products = new();
+    protected override void OnInitialized()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            Products.Add(new()
+            {
+                Id = 1,
+                Name = "Flavor"+i,
+                IsActive = false,
+                ProductProperties = new List<Demo_ProductProp>()
+                {
+                    new Demo_ProductProp { Id = 1, Key = "Flavor", Value = "Rose"},
+                    new Demo_ProductProp { Id = 2, Key = "Size", Value = "20oz"},
+                    new Demo_ProductProp { Id = 3, Key = "Color", Value="Purple" }
+                }
+            });
+        }
+    }
+}
+
+@* @if (Loading == true)
 {
     <div class="spinner"></div>
 }
 else
 {
-    <p>Name : @Product.Name</p>
-    <p>Active : @Product.IsActive</p>
-}
-
-@code {
+} *@
+@* @code {
     bool Loading = true;
 
-    // protected override async Task OnAfterRenderAsync()
-    // {
-    //     await Task.Delay(5000);
-    //     Loading = false;
-    // }
-
-    Demo_Product Product = new()
-        {
-            Id = 1,
-            Name = "Rose Candle",
-            Price = 10.99,
-            IsActive = true
-        };
-}
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(5000);
+        Loading = false;
+    }
+} *@
