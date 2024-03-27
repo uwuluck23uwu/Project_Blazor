@@ -3,26 +3,9 @@
 <h3>DemoProduct</h3>
 
 <div class="row">
-    @foreach (var prop in Products)
+    @foreach (var prod in Products)
     {
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title">ID @prop.Id</h5>
-                <p class="card-text">@prop.Name</p>
-                <p>
-                    Show properties : <input type="checkbox" @bind-value="prop.IsActive" checked="@prop.IsActive" />
-                </p>
-                <button type="button" class="btn btn-danger">Delete</button>
-                <button type="button" class="btn btn-success">Edit</button>
-                @if (prop.IsActive)
-                {
-                    foreach (var propProd in prop.ProductProperties)
-                    {
-                        <p>@propProd.Key - @propProd.Value</p>
-                    }
-                }
-            </div>
-        </div>
+        <_IndividualProduct prod="@prod" />
     }
 </div>
 
@@ -30,13 +13,13 @@
     List<Demo_Product> Products = new();
     protected override void OnInitialized()
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 1; i < 5; i++)
         {
             Products.Add(new()
                 {
-                    Id = 1,
+                    Id = i,
                     Name = "Flavor" + i,
-                    IsActive = false,
+                    IsActive = i%2==0 ? true : false,
                     ProductProperties = new List<Demo_ProductProp>()
                 {
                     new Demo_ProductProp { Id = 1, Key = "Flavor", Value = "Rose"},

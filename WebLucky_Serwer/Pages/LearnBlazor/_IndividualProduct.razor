@@ -1,0 +1,23 @@
+﻿<div class="card m-2" style="width: 18rem;">
+    <div class="card-body">
+        <h5 class="card-title">ID @prod.Id</h5>
+        <p class="card-text">Name : @prod.Name</p>
+        <p>
+            Show properties : <input type="checkbox" @bind-value="prod.IsActive" checked="@prod.IsActive" />
+        </p>
+        <_EditDeleteButton IsActive ="@prod.IsActive"/>
+        @if (prod.IsActive)
+        {
+            foreach (var propProd in prod.ProductProperties)
+            {
+                <p>@propProd.Key - @propProd.Value</p>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Demo_Product prod { get; set; }
+
+}

@@ -5,7 +5,7 @@
     <h1>Hello You</h1>
 </div>
 <div class="row border border-5 rounded m-6">
-    <div class="col-6 p-2">
+    <div class="col-6 border border-1 rounded p-2">
         Active : <input type="checkbox" @bind-value="Product.IsActive" checked="@Product.IsActive" />
         <br />
         Price : <input type="number" min="0" @bind-value="Product.Price" @bind-value:event="oninput" />
@@ -18,7 +18,7 @@
             }
         </InputSelect>
     </div>
-    <div class="col-6">
+    <div class="col-6 border border-1 rounded">
         <p>Name : @Product.Name</p>
         <p>Active : @Product.IsActive</p>
         <p>This product is : @(Product.IsActive ? "Active" : "IsActive")</p>
