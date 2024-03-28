@@ -12,17 +12,19 @@
 <hr>
 <_AnotherChildComponent></_AnotherChildComponent>
 <_AnotherChildComponent InputAttributes="InputAttributesFromParent"></_AnotherChildComponent>
-<hr>
-<CascadingValue Value="@MessageForGrandChild">
-    <_ChildComponent AddCount="@AddCount">
-    </_ChildComponent>
+
+<CascadingValue Value="@MessageForGrandChild" Name="message">
+    <CascadingValue Value="@LuckyNumber" Name="luckyNumber">
+        <_ChildComponent></_ChildComponent>
+    </CascadingValue>
 </CascadingValue>
+
 
 @code {
     private int Count = 0;
     public void AddCount() => Count++;
     public void SubtractCount() => Count--;
-    public string messageText = "";
+    public string LuckyNumber = "7";
     public string MessageForGrandChild = "Cascading : จากยายนะหลาน";
     public Dictionary<string, object> InputAttributesFromParent { get; set; } = new Dictionary<string, object>()
     {
