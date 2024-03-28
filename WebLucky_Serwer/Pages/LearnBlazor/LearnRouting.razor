@@ -1,0 +1,34 @@
+﻿@page "/learnBlazor/learnRouting/{parameter1}"
+@page "/learnBlazor/learnRouting/{parameter1}/{parameter2}"
+@page "/learnBlazor/learnRouting"
+@page "/learnRouting"
+@inject NavigationManager _NavigationManager
+
+<h3>LearnRouting</h3>
+<a href="learnRouting?Param1=Tangy&Param2=Blazor" class="btn btn-primary">Navigate to query parameter</a>
+<button class="btn btn-success" @onclick="@LoadParameters">Load Parameters</button>
+<p>
+    parameter1 = @parameter1
+    parameter2 = @parameter2
+</p>
+<p>
+    Param1 : @Param1
+    Param2 : @Param2
+</p>
+
+@code {
+    [Parameter]
+    public string parameter1 { get; set; }
+    [Parameter]
+    public string parameter2 { get; set; }
+    public string Param1 { get; set; }
+    public string Param2 { get; set; }
+
+    private void LoadParameters()
+    {
+        var absoluteUri = new Uri(_NavigationManager.Uri);
+        var queryParam = System.Web.HttpUtility.ParseQueryString(absoluteUri.Query);
+        Param1 = queryParam["Param1"];
+        Param2 = queryParam["Param2"];
+    }
+}
