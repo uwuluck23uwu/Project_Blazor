@@ -1,9 +1,7 @@
 ﻿<h3>_ChildComponent</h3>
 
-@if ((ChildContent != null))
-{
-    <h1>@ChildContent</h1>
-}
+<h2>ChildContent : @ChildContent</h2>
+<h2>DangerChildContent = @DangerChildContent</h2>
 <div>
     <butto class="btn btn-success" onclick="@AddCount">+</butto>
     <butto disabled="@(!SubtractCount.HasDelegate)" class="btn btn-danger" onclick="@SubtractCount">-</butto>
@@ -12,6 +10,8 @@
 @code {
     [Parameter]
     public RenderFragment ChildContent { set; get; }
+    [Parameter]
+    public RenderFragment DangerChildContent { set; get; }
     [Parameter]
     public EventCallback AddCount { set; get; }
     [Parameter]
