@@ -9,15 +9,26 @@
     This message From Parent
 </_ChildComponent>
 <h2>Count = @Count</h2>
+<hr>
+<_AnotherChildComponent></_AnotherChildComponent>
+<_AnotherChildComponent InputAttributes="InputAttributesFromParent"></_AnotherChildComponent>
+<hr>
+<CascadingValue Value="@MessageForGrandChild">
+    <_ChildComponent AddCount="@AddCount">
+    </_ChildComponent>
+</CascadingValue>
 
 @code {
     private int Count = 0;
-    public void AddCount()
+    public void AddCount() => Count++;
+    public void SubtractCount() => Count--;
+    public string messageText = "";
+    public string MessageForGrandChild = "Cascading : จากยายนะหลาน";
+    public Dictionary<string, object> InputAttributesFromParent { get; set; } = new Dictionary<string, object>()
     {
-        Count++;
-    }
-    public void SubtractCount()
-    {
-        Count--;
-    }
+        { "required" , "required"},
+        { "placeholder", "Enter Name From Parent"},
+        { "maxlength", 5},
+        { "style", "background-color:green; font-size:30px"}
+    };
 }

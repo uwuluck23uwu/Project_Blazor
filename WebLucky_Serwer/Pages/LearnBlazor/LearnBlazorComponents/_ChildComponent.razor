@@ -3,9 +3,10 @@
 <h2>ChildContent : @ChildContent</h2>
 <h2>DangerChildContent = @DangerChildContent</h2>
 <div>
-    <butto class="btn btn-success" onclick="@AddCount">+</butto>
-    <butto disabled="@(!SubtractCount.HasDelegate)" class="btn btn-danger" onclick="@SubtractCount">-</butto>
+    <button class="btn btn-success" onclick="@AddCount">+</button>
+    <button disabled="@(!SubtractCount.HasDelegate)" class="btn btn-danger" onclick="@SubtractCount">-</button>
 </div>
+<_GrandChildComponent></_GrandChildComponent>
 
 @code {
     [Parameter]
