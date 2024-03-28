@@ -1,0 +1,22 @@
+﻿@page "/learnblazor/parentcomponent"
+<h3>ParentComponent</h3>
+
+<_ChildComponent AddCount="@AddCount" SubtractCount="@SubtractCount">
+    This message From Parent
+</_ChildComponent>
+<_ChildComponent AddCount="@AddCount">
+    This message From Parent
+</_ChildComponent>
+<h2>Count = @Count</h2>
+
+@code {
+    private int Count = 0;
+    public void AddCount()
+    {
+        Count++;
+    }
+    public void SubtractCount()
+    {
+        Count--;
+    }
+}

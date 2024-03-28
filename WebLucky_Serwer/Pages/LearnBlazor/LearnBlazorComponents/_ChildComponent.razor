@@ -1,0 +1,19 @@
+﻿<h3>_ChildComponent</h3>
+
+@if ((ChildContent != null))
+{
+    <h1>@ChildContent</h1>
+}
+<div>
+    <butto class="btn btn-success" onclick="@AddCount">+</butto>
+    <butto disabled="@(!SubtractCount.HasDelegate)" class="btn btn-danger" onclick="@SubtractCount">-</butto>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { set; get; }
+    [Parameter]
+    public EventCallback AddCount { set; get; }
+    [Parameter]
+    public EventCallback SubtractCount { set; get; }
+}
