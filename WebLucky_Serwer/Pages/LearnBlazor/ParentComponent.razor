@@ -15,13 +15,14 @@
 
 <CascadingValue Value="@MessageForGrandChild" Name="message">
     <CascadingValue Value="@LuckyNumber" Name="luckyNumber">
-        <_ChildComponent></_ChildComponent>
+        <_ChildComponent @ref="childComp"></_ChildComponent>
     </CascadingValue>
 </CascadingValue>
-
-
+<hr>
+<button class="btn btn-success" @onclick="() => childComp.SweetAlertSuccess()">SweetAlert from ChildComponent</button>
 @code {
     private int Count = 0;
+    private _ChildComponent childComp;
     public void AddCount() => Count++;
     public void SubtractCount() => Count--;
     public string LuckyNumber = "7";

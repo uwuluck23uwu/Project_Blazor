@@ -1,4 +1,6 @@
-﻿<h3>_ChildComponent</h3>
+﻿@inject IJSRuntime _JsRuntime
+
+<h3>_ChildComponent</h3>
 
 <h2>ChildContent : @ChildContent</h2>
 <h2>DangerChildContent = @DangerChildContent</h2>
@@ -17,4 +19,9 @@
     public EventCallback AddCount { set; get; }
     [Parameter]
     public EventCallback SubtractCount { set; get; }
+
+    public async Task SweetAlertSuccess()
+    {
+        await _JsRuntime.InvokeVoidAsync("ShowSwal", "success", "ข้อความจากลูก!");
+    }
 }
