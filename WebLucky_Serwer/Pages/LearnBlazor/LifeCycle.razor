@@ -1,0 +1,29 @@
+﻿@page "/learnBlazor/lifecycle"
+
+<_LifeCycleChild></_LifeCycleChild>
+<hr>
+@foreach (var item in EventType)
+{
+    <h3 class="text-danger">@item</h3>
+}
+<hr>
+<button class="btn btn-primary" @onclick="Increment">Count : @currentCount</button>
+
+
+@code {
+    private int currentCount = 0;
+    List<string> EventType = new List<string>();
+    private void Increment()
+    {
+        currentCount++;
+    }
+    protected override void OnInitialized()
+    {
+        EventType.Add("แม่ : เริ่มต้นทำงานเป็นครั้งแรก และทำครั้งเดียว");
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        EventType.Add("แม่ Async : เริ่มต้นทำงานเป็นครั้งแรก และทำครั้งเดียว");
+        await Task.Delay(1000);
+    }
+}

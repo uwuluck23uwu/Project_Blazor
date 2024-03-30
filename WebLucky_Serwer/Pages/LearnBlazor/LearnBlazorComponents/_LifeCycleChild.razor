@@ -1,0 +1,15 @@
+﻿<h3>_LifeCycleChild</h3>
+
+@foreach (var item in EventType)
+{
+    <h3>@item</h3>
+}
+
+@code {
+    List<string> EventType = new List<string>();
+    protected override void OnInitialized()
+    {
+        EventType.Add("ลูก : เริ่มต้นทำงานเป็นครั้งแรก และทำครั้งเดียว");
+    }
+
+}
