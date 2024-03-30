@@ -7,8 +7,8 @@
             Console.WriteLine(x + num);
         }
     }
-    public static string Show(this string s, string h)
-    {
-        return $"New message {s} + {h}";
-    }
+    //public static string Show(this string s, string h)
+    //{
+    //    return $"New message {s} + {h}";
+    //}
 }
