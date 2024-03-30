@@ -30,17 +30,17 @@
 
     private async Task TestConfirmBox()
     {
-        ConfirmResult = await _JsRuntime.InvokeAsync<bool>("confirm", ConfirmMessage);
+        ConfirmResult = await _JsRuntime.ConfirmBox("ยืนยันการลบ");
     }
 
     private async Task ToastrSuccess()
     {
-        await _JsRuntime.InvokeVoidAsync("ShowToastr", "success", "Success Ja");
+        await _JsRuntime.ToastrSuccess("สำเร็จ");
     }
 
     private async Task ToastrFailure()
     {
-        await _JsRuntime.InvokeVoidAsync("ShowToastr", "error", "Error Ja");
+        await _JsRuntime.ToastrError("ล้มเหลว");
     }
 
 }
