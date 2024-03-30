@@ -1,0 +1,22 @@
+﻿@page "/LearnBlazor/ToastComponent"
+@inject ISnackbar SnackbarService
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@OnClick">Prevent duplicate Snackbars</MudButton>
+
+@code {
+    private void OnClick()
+    {
+        var config = (SnackbarOptions options) =>
+        {
+            options.VisibleStateDuration = 20000;
+            options.DuplicatesBehavior = SnackbarDuplicatesBehavior.Prevent;
+        };
+        SnackbarService.Add("This is the only snackbar that will be shown", Severity.Info, configure: config, key: "mudblazor");
+        SnackbarService.Add(@<span>This one has the same key</span>, configure: config, key: "mudblazor");
+        SnackbarService.Add<MudChip>(new Dictionary<string, object>() {
+            { "Text", "This one also has the same key" }
+        }, configure: config, key: "mudblazor");
+    }
+}
+
+

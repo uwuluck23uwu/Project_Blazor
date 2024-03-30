@@ -1,0 +1,26 @@
+﻿@page "/learnBlazor/blazorJs"
+@inject IJSRuntime _JsRuntime
+@inject IDialogService DialogService
+<h3>BlazorJs</h3>
+
+<button class="btn btn-secondary" @onclick="OnAlert">Alert</button>
+@if (chk)
+{
+    <span>Confirm Hello</span>
+    <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+        Open Simple Dialog
+    </MudButton>
+}
+
+@code {
+    public bool chk { get; set; }
+    public async Task OnAlert()
+    {
+        chk = await _JsRuntime.InvokeAsync<bool>("confirm", "สวัดดีเธอ");
+    }
+    public void OpenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<BlazorJs>("Simple Dialog", options);
+    }
+}
