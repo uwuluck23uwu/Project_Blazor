@@ -23,6 +23,17 @@
     <button class="btn btn-success m-1" @onclick="ToastrSuccess">Toastr Success</button>
     <button class="btn btn-danger m-1" @onclick="ToastrFailure">Toastr Failure</button>
 </div>
+<hr>
+<div class="row">
+    <button class="btn btn-success m-1"
+            @onclick="SweetAlertSuccess">
+        SweetAlert Success
+    </button>
+    <button class="btn btn-danger m-1"
+            @onclick="SweetAlertFailure">
+        SweetAlert Failure
+    </button>
+</div>
 
 @code {
     private string ConfirmMessage = "Are you sure you want to click?";
@@ -32,7 +43,6 @@
     {
         ConfirmResult = await _JsRuntime.ConfirmBox("ยืนยันการลบ");
     }
-
     private async Task ToastrSuccess()
     {
         await _JsRuntime.ToastrSuccess("สำเร็จ");
@@ -42,7 +52,15 @@
     {
         await _JsRuntime.ToastrError("ล้มเหลว");
     }
+    private async Task SweetAlertSuccess()
+    {
+        await _JsRuntime.InvokeVoidAsync("ShowSwal", "success", "Task completed successfully!");
+    }
 
+    private async Task SweetAlertFailure()
+    {
+        await _JsRuntime.InvokeVoidAsync("ShowSwal", "error", "Task failed!");
+    }
 }
 
 @* <button class="btn btn-secondary" @onclick="OnAlert">Alert</button>
