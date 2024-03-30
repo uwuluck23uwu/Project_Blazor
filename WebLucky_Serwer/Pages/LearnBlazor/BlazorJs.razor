@@ -1,26 +1,67 @@
-﻿@page "/learnBlazor/blazorJs"
+﻿@page "/learnBlazor/BlazorJs"
 @inject IJSRuntime _JsRuntime
 @inject IDialogService DialogService
 <h3>BlazorJs</h3>
 
-<button class="btn btn-secondary" @onclick="OnAlert">Alert</button>
+<div class="row">
+    <button class="btn btn-secondary" @onclick="TestConfirmBox">Test Confirm Button</button>
+</div>
+
+<div class="row text-center mt-4">
+    @if (ConfirmResult)
+    {
+        <p>Confirmation has been made!</p>
+    }
+    else
+    {
+        <p>Confirmation Pending!</p>
+    }
+</div>
+
+<hr>
+<div class="row">
+    <button class="btn btn-success m-1" @onclick="ToastrSuccess">Toastr Success</button>
+    <button class="btn btn-danger m-1" @onclick="ToastrFailure">Toastr Failure</button>
+</div>
+
+@code {
+    private string ConfirmMessage = "Are you sure you want to click?";
+    private bool ConfirmResult { get; set; }
+
+    private async Task TestConfirmBox()
+    {
+        ConfirmResult = await _JsRuntime.InvokeAsync<bool>("confirm", ConfirmMessage);
+    }
+
+    private async Task ToastrSuccess()
+    {
+        await _JsRuntime.InvokeVoidAsync("ShowToastr", "success", "Success Ja");
+    }
+
+    private async Task ToastrFailure()
+    {
+        await _JsRuntime.InvokeVoidAsync("ShowToastr", "error", "Error Ja");
+    }
+
+}
+
+@* <button class="btn btn-secondary" @onclick="OnAlert">Alert</button>
 @if (chk)
 {
     <span>Confirm Hello</span>
     <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
         Open Simple Dialog
     </MudButton>
-}
-
-@code {
-    public bool chk { get; set; }
-    public async Task OnAlert()
-    {
-        chk = await _JsRuntime.InvokeAsync<bool>("confirm", "สวัดดีเธอ");
-    }
-    public void OpenDialog()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<BlazorJs>("Simple Dialog", options);
-    }
+} *@
+@code{
+    // public bool chk { get; set; }
+    // public async Task OnAlert()
+    // {
+    //     chk = await _JsRuntime.InvokeAsync<bool>("confirm", "สวัดดีเธอ");
+    // }
+    // public void OpenDialog()
+    // {
+    //     var options = new DialogOptions { CloseOnEscapeKey = true };
+    //     DialogService.Show<BlazorJs>("Simple Dialog", options);
+    // }
 }
