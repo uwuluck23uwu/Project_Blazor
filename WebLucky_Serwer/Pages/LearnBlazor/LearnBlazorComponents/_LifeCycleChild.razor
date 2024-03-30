@@ -6,10 +6,15 @@
 }
 
 @code {
+    [Parameter]
+    public int CountValue { get; set; }
     List<string> EventType = new List<string>();
     protected override void OnInitialized()
     {
         EventType.Add("ลูก : เริ่มต้นทำงานเป็นครั้งแรก และทำครั้งเดียว");
     }
-
+    protected override void OnParametersSet()
+    {
+        EventType.Add($"ลูก : Child - OnParametersSet is called {CountValue}");
+    }
 }

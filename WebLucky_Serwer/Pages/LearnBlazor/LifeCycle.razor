@@ -1,6 +1,6 @@
 ﻿@page "/learnBlazor/lifecycle"
 
-<_LifeCycleChild></_LifeCycleChild>
+<_LifeCycleChild CountValue="@currentCount"></_LifeCycleChild>
 <hr>
 @foreach (var item in EventType)
 {
@@ -8,7 +8,6 @@
 }
 <hr>
 <button class="btn btn-primary" @onclick="Increment">Count : @currentCount</button>
-
 
 @code {
     private int currentCount = 0;
@@ -24,6 +23,15 @@
     protected override async Task OnInitializedAsync()
     {
         EventType.Add("แม่ Async : เริ่มต้นทำงานเป็นครั้งแรก และทำครั้งเดียว");
+        await Task.Delay(1000);
+    }
+    protected override void OnParametersSet()
+    {
+        EventType.Add("แม่ : OnParametersSet is called");
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        EventType.Add("แม่ Async : OnParametersSetAsync is called");
         await Task.Delay(1000);
     }
 }
