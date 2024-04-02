@@ -1,0 +1,25 @@
+﻿@page "/category/create"
+@inject ICategoryRepository _cr
+@inject NavigationManager _nm
+
+<EditForm Model="Category" OnValidSubmit="UpsertCategory">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="Category.Name"></InputText>
+        <ValidationMessage For="() => Category.Name"/>
+    </div>
+    <button type="submit" class="btn btn-primary">@Title</button>
+    <NavLink href="category" class="btn btn-secondary">Back to Category</NavLink>
+</EditForm>
+
+@code {
+    private CategoryDTO Category { get; set; } = new CategoryDTO();
+    private string Title { get; set; } = "Create";
+    private int Count;
+    private void UpsertCategory()
+    {
+        _cr.Create(Category);
+        _nm.NavigateTo("category");
+    }
+}
