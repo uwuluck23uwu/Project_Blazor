@@ -9,9 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebLucky_Client", "WebLucky
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tangy_Models", "Tangy_Models\Tangy_Models.csproj", "{0D28124C-E69D-4F6C-A5FB-21183C276B77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{E0ACA1CC-4C9C-4153-8D7E-90D8872D50EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{E0ACA1CC-4C9C-4153-8D7E-90D8872D50EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadzenApp", "RadzenApp\RadzenApp.csproj", "{C37C4B63-C065-4945-825D-624C78898562}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadzenApp", "RadzenApp\RadzenApp.csproj", "{C37C4B63-C065-4945-825D-624C78898562}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tangy_Business", "Tangy_Business\Tangy_Business.csproj", "{91BFA8AF-1022-4B19-B0C4-4B8DD1AC0CC9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tangy_Common", "Tangy_Common\Tangy_Common.csproj", "{EB49C3B8-62D9-4762-8BC4-6E9739AA813B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tangy_DataAccess_1", "Tangy_DataAccess_1\Tangy_DataAccess_1.csproj", "{4A26517A-9EFD-4856-8485-C487F4FB6CC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +45,18 @@ Global
 		{C37C4B63-C065-4945-825D-624C78898562}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C37C4B63-C065-4945-825D-624C78898562}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C37C4B63-C065-4945-825D-624C78898562}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91BFA8AF-1022-4B19-B0C4-4B8DD1AC0CC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91BFA8AF-1022-4B19-B0C4-4B8DD1AC0CC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91BFA8AF-1022-4B19-B0C4-4B8DD1AC0CC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91BFA8AF-1022-4B19-B0C4-4B8DD1AC0CC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB49C3B8-62D9-4762-8BC4-6E9739AA813B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB49C3B8-62D9-4762-8BC4-6E9739AA813B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB49C3B8-62D9-4762-8BC4-6E9739AA813B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB49C3B8-62D9-4762-8BC4-6E9739AA813B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A26517A-9EFD-4856-8485-C487F4FB6CC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A26517A-9EFD-4856-8485-C487F4FB6CC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A26517A-9EFD-4856-8485-C487F4FB6CC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A26517A-9EFD-4856-8485-C487F4FB6CC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
