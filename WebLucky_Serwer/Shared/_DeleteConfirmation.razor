@@ -1,0 +1,48 @@
+﻿@* <div class="modal" tabindex="-1" id="DeleteModal" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>ยืนยันการลบ</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button @onclick="()=>SendConfirm(true)" type="button" class="btn btn-primary">Delete</button>
+            </div>
+        </div>
+    </div>
+</div> *@
+
+<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="OnButtonClicked">Delete</MudButton>
+<div>
+    <MudMessageBox @ref="mbox" Title="Warning" CancelText="Cancel">
+        <MessageContent>
+            Deleting can <b><i>not</i></b> be undone!
+        </MessageContent>
+        <YesButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteForever">Delete!</MudButton>
+        </YesButton>
+    </MudMessageBox>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<int> OnDeleteConfirm { get; set; }
+    // public async Task SendConfirm(bool chk)
+    // {
+    //     await OnDeleteConfirm.InvokeAsync(chk);
+    // }
+
+    MudMessageBox mbox { get; set; }
+    private async void OnButtonClicked()
+    {
+        bool? result = await mbox.Show();
+        if (result != null && result.Value)
+        {
+            await OnDeleteConfirm.InvokeAsync();
+        }
+    }
+}
