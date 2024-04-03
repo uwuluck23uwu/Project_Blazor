@@ -15,6 +15,7 @@ namespace Tangy_DataAccess_1.Data
                 "Trusted_connection=true; TrustServerCertificate=true");
         }
 
+        public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
     }
 }
