@@ -70,28 +70,28 @@
         if (firstRender)
         {
             await Task.Delay(1000);
-            LoadCategories();
+            await LoadCategories();
         }
     }
-    private void LoadCategories()
+    private async Task LoadCategories()
     {
         IsLoading = true;
         StateHasChanged();
-        Categories = _cr.GetAll();
+        Categories = await _cr.GetAll();
         IsLoading = false;
         StateHasChanged();
     }
-    private void ShowConfirm(int id)
+    private async Task ShowConfirm(int id)
     {
         deleteId = id;
-        _js.InvokeVoidAsync("ShowDeleteConfirmationModal");
+        await _js.InvokeVoidAsync("ShowDeleteConfirmationModal");
     }
     public async Task DeleteConfirm(int deleteId)
     {
         if (deleteId != 0)
         {
-            _cr.Delete(deleteId);
-            LoadCategories();
+            await _cr.Delete(deleteId);
+            await LoadCategories();
         }
         //await _js.InvokeVoidAsync("HideDeleteConfirmationModal");
     }

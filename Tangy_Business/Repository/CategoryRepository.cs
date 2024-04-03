@@ -3,6 +3,7 @@ using Tangy_DataAccess_1;
 using Tangy_DataAccess_1.Data;
 using Tangy_Business.Repository.IRepository;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Tangy_Business.Repository
 {
@@ -17,12 +18,12 @@ namespace Tangy_Business.Repository
             _mp = mp;
         }
 
-        public CategoryDTO Create(CategoryDTO objDTO)
+        public async Task<CategoryDTO> Create(CategoryDTO objDTO)
         {
             var category = _mp.Map<Category>(objDTO);
             category.CreatedDate = DateTime.Now;
             _db.Categories.Add(category);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
             return new CategoryDTO()
             {
@@ -31,41 +32,40 @@ namespace Tangy_Business.Repository
             };
         }
 
-        public int Delete(int id)
+        public async Task<int> Delete(int id)
         {
-            var obj = _db.Categories.FirstOrDefault(u => u.Id == id);
+            var obj = await _db.Categories.FirstOrDefaultAsync(u => u.Id == id);
             if (obj != null)
             {
                 _db.Categories.Remove(obj);
-                return _db.SaveChanges();
+                return await _db.SaveChangesAsync();
             }
             return 0;
         }
 
-        public CategoryDTO Get(int id)
+        public async Task<CategoryDTO> Get(int id)
         {
-            var obj = _db.Categories.FirstOrDefault(u => u.Id == id);
+            var obj = await _db.Categories.FirstOrDefaultAsync(u => u.Id == id);
             if (obj != null)
             {
                 return _mp.Map<Category, CategoryDTO>(obj);
             }
             return new CategoryDTO();
-
         }
 
-        public IEnumerable<CategoryDTO> GetAll()
+        public async Task<IEnumerable<CategoryDTO>> GetAll()
         {
             return _mp.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(_db.Categories);
         }
 
-        public CategoryDTO Update(CategoryDTO objDTO)
+        public async Task<CategoryDTO> Update(CategoryDTO objDTO)
         {
-            var objFromDb = _db.Categories.FirstOrDefault(u => u.Id == objDTO.Id);
+            var objFromDb = await _db.Categories.FirstOrDefaultAsync(u => u.Id == objDTO.Id);
             if (objFromDb != null)
             {
                 objFromDb.Name = objDTO.Name;
                 _db.Categories.Update(objFromDb);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 return _mp.Map<Category, CategoryDTO>(objFromDb);
             }
             return objDTO;

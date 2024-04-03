@@ -20,17 +20,17 @@
     [Parameter]
     public int Id { get; set; }
     private int Count;
-    private void UpsertCategory()
+    private async Task UpsertCategory()
     {
-        if (Id == 0) { _cr.Create(Category); }
-        else { _cr.Update(Category); }
+        if (Id == 0) { await _cr.Create(Category); }
+        else { await _cr.Update(Category); }
         _nm.NavigateTo("category");
     }
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (Id != 0)
         {
-            Category = _cr.Get(Id);
+            Category = await _cr.Get(Id);
             Title = "Update";
         }
     }
