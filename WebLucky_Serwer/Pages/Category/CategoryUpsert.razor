@@ -1,4 +1,5 @@
 ﻿@page "/category/create"
+@page "/category/create/{Id:int}"
 @inject ICategoryRepository _cr
 @inject NavigationManager _nm
 
@@ -9,17 +10,28 @@
         <InputText class="form-control" @bind-Value="Category.Name"></InputText>
         <ValidationMessage For="() => Category.Name"/>
     </div>
-    <button type="submit" class="btn btn-primary">@Title</button>
+    <button type="submit" class="btn @(Title == "Create" ? "btn-primary" : "btn-danger")">@Title</button>
     <NavLink href="category" class="btn btn-secondary">Back to Category</NavLink>
 </EditForm>
 
 @code {
     private CategoryDTO Category { get; set; } = new CategoryDTO();
     private string Title { get; set; } = "Create";
+    [Parameter]
+    public int Id { get; set; }
     private int Count;
     private void UpsertCategory()
     {
-        _cr.Create(Category);
+        if (Id == 0) { _cr.Create(Category); }
+        else { _cr.Update(Category); }
         _nm.NavigateTo("category");
+    }
+    protected override void OnInitialized()
+    {
+        if (Id != 0)
+        {
+            Category = _cr.Get(Id);
+            Title = "Update";
+        }
     }
 }

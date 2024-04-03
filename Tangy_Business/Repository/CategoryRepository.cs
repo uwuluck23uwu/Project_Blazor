@@ -69,7 +69,6 @@ namespace Tangy_Business.Repository
                 return _mp.Map<Category, CategoryDTO>(objFromDb);
             }
             return objDTO;
-
         }
     }
 }
