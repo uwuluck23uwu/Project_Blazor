@@ -1,10 +1,11 @@
 ﻿@page "/product/create"
 @page "/product/edit/{Id:int}"
-@inject ICategoryRepository _cr
+@inject IFileUpload _fu
 @inject IProductRepository _pr
+@inject ICategoryRepository _cr
 @inject NavigationManager _nm
-@inject IFileUpload _fileUpload
-@inject IJSRuntime _jsRuntime
+
+<ToastMudComponent Open="@Open" Message="@Message" Toggle="@Toggle" />
 <div class="row m-2">
     <div class="col-md-10 p-1">
         <EditForm Model="Product" OnValidSubmit="UpsertProduct">
@@ -63,12 +64,12 @@
     </div>
 </div>
 
-
-
 @code {
     [Parameter]
     public int Id { get; set; }
     private int Count;
+    public bool Open { get; set; }
+    public string? Message { get; set; }
     public string OldImageUrl { get; set; }
     private string Title { get; set; } = "Create";
 
@@ -89,17 +90,19 @@
     {
         if (Id == 0) 
         {
+            Open = true;
+            Message = "Product created successfully.";
             await _pr.Create(Product); 
-            await _jsRuntime.ToastrSuccess("Product created successfully.");
         }
         else 
         {
             if (OldImageUrl != Product.ImageUrl)
             {
-                _fileUpload.DeleteFile(OldImageUrl);
+                _fu.DeleteFile(OldImageUrl);
             }
+            Open = true;
+            Message = "Product updated successfully.";
             await _pr.Update(Product);
-            await _jsRuntime.ToastrSuccess("Product updated successfully.");
         }
         _nm.NavigateTo("product");
     }
@@ -114,11 +117,12 @@
                     System.IO.FileInfo fileInfo = new System.IO.FileInfo(file.Name);
                     if (fileInfo.Extension.ToLower() == ".jpg" || fileInfo.Extension.ToLower() == ".png" || fileInfo.Extension.ToLower() == ".jpeg")
                     {
-                        Product.ImageUrl = await _fileUpload.UploadFile(file);
+                        Product.ImageUrl = await _fu.UploadFile(file);
                     }
                     else
                     {
-                        await _jsRuntime.ToastrError("Please select .jpg/.jpeg/.png file only");
+                        Open = true; 
+                        Message = "Please select .jpg/.jpeg/.png file only";
                         return;
                     }
                 }
@@ -126,7 +130,13 @@
         }
         catch (Exception ex)
         {
-            await _jsRuntime.ToastrError(ex.Message);
+            Open = true;
+            Message = ex.Message;
         }
+    }
+    public void Toggle()
+    {
+        Open = false;
+        Message = "";
     }
 }

@@ -1,8 +1,8 @@
 ﻿@page "/product"
-@inject IJSRuntime _jr
 @inject IFileUpload _fu
 @inject IProductRepository _pr
 
+<ToastMudComponent Open="@Open" Message="@Message" Toggle="@Toggle" />
 @if (Products.Any())
 { 
     <div class="row m-2">
@@ -82,7 +82,9 @@ else
 }
 
 @code {
+    public bool Open { get; set; }
     public int deleteId { get; set; }
+    public string? Message { get; set; }
     public bool IsLoading { get; set; } = true;
 
     private IEnumerable<ProductDTO> Products { get; set; } = new List<ProductDTO>();
@@ -108,10 +110,16 @@ else
         if (deleteId != 0)
         {
             ProductDTO product = await _pr.Get(deleteId);
+            Open = true;
+            Message = "ลบสำเร็จ";
             _fu.DeleteFile(product.ImageUrl);
             await _pr.Delete(deleteId);
-            await _jr.ToastrSuccess("Product Deleted successfully");
             await LoadProducts();
         }
+    }
+    public void Toggle()
+    {
+        Open = false;
+        Message = "";
     }
 }

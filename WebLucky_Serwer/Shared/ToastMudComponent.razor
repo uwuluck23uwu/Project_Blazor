@@ -1,0 +1,35 @@
+﻿@page "/Shared/ToastMudComponent"
+@inject ISnackbar SnackbarService
+
+@code {
+    [Parameter]
+    public bool Open { get; set; }
+    [Parameter]
+    public string? Message { get; set; }
+    [Parameter]
+    public EventCallback Toggle { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Open)
+        {
+            OnClick(); 
+            await Toggle.InvokeAsync();
+        }
+    }
+    private void OnClick()
+    {
+        var config = (SnackbarOptions options) =>
+        {
+            options.VisibleStateDuration = 20000;
+            options.DuplicatesBehavior = SnackbarDuplicatesBehavior.Prevent;
+        };
+        SnackbarService.Add(Message, (Message == "" ? Severity.Error : Severity.Success), configure: config, key: "mudblazor");
+        SnackbarService.Add(@<span>This one has the same key</span>, configure: config, key: "mudblazor");
+        SnackbarService.Add<MudChip>(new Dictionary<string, object>() {
+            { "Text", "This one also has the same key" }
+        }, configure: config, key: "mudblazor");
+    }
+}
+
+
