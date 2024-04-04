@@ -15,17 +15,13 @@
 </EditForm>
 
 @code {
-    private CategoryDTO Category { get; set; } = new CategoryDTO();
-    private string Title { get; set; } = "Create";
     [Parameter]
     public int Id { get; set; }
     private int Count;
-    private async Task UpsertCategory()
-    {
-        if (Id == 0) { await _cr.Create(Category); }
-        else { await _cr.Update(Category); }
-        _nm.NavigateTo("category");
-    }
+    private string Title { get; set; } = "Create";
+
+    private CategoryDTO Category { get; set; } = new CategoryDTO();
+
     protected override async Task OnInitializedAsync()
     {
         if (Id != 0)
@@ -33,5 +29,11 @@
             Category = await _cr.Get(Id);
             Title = "Update";
         }
+    }
+    private async Task UpsertCategory()
+    {
+        if (Id == 0) { await _cr.Create(Category); }
+        else { await _cr.Update(Category); }
+        _nm.NavigateTo("category");
     }
 }

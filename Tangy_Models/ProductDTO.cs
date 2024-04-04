@@ -12,7 +12,7 @@ namespace Tangy_Models
         public bool ShopFavorites { get; set; }
         public bool CustomerFavorites { get; set; }
         public string Color { get; set; }
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
 
         [Range(1, int.MaxValue, ErrorMessage = "Please select a category")]
         public int CategoryId { get; set; }

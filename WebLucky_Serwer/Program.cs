@@ -1,3 +1,5 @@
+global using WebLucky_Serwer.Service;
+global using WebLucky_Serwer.Service.IService;
 using MudBlazor;
 using MudBlazor.Services;
 using WebLucky_Serwer.Data;
@@ -15,6 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IFileUpload, FileUpload>();
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
