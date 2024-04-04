@@ -1,5 +1,5 @@
 ﻿@page "/category/create"
-@page "/category/create/{Id:int}"
+@page "/category/edit/{Id:int}"
 @inject ICategoryRepository _cr
 @inject NavigationManager _nm
 
@@ -7,7 +7,7 @@
     <DataAnnotationsValidator />
     <div class="mb-3">
         <label class="form-label">Name</label>
-        <InputText class="form-control" @bind-Value="Category.Name"></InputText>
+        <InputText class="form-control" @bind-Value="Category.Name" />
         <ValidationMessage For="() => Category.Name"/>
     </div>
     <button type="submit" class="btn @(Title == "Create" ? "btn-primary" : "btn-danger")">@Title</button>

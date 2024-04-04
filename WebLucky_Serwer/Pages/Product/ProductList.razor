@@ -25,15 +25,22 @@
                 @foreach (var item in Products)
                 {
                     <tr>
-                        <th>@item.Name</th>
-                        <th>@item.ShopFavorites</th>
-                        <th>@item.CustomerFavorites</th>
-                        <th>@item.Category</th>
+                        <td>@item.Name</td>
                         <th>
-                            <NavLink class="btn-primary btn">Edit</NavLink>
-                            <_DeleteConfirmation />
+                            <input type="checkbox" disabled checked="@item.ShopFavorites">
                         </th>
+                        <th>
+                            <input type="checkbox" disabled checked="@item.CustomerFavorites">
+                        </th>
+                        <th>
+                            @item.Category.Name
+                        </th>
+                        <td>
+                            <NavLink href="@($"product/edit/{item.Id}")" class="btn-primary btn">Edit</NavLink>
+                            <button class="btn btn-danger">Delete</button>
+                        </td>
                     </tr>
+
                 }
             </tbody>
 

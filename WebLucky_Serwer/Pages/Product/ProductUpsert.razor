@@ -1,0 +1,65 @@
+﻿@page "/product/create"
+@page "/product/edit/{Id:int}"
+@inject IProductRepository _pr
+@inject NavigationManager _nm
+
+<EditForm Model="Product" OnValidSubmit="UpsertProduct">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="Product.Name" />
+        <ValidationMessage For="() => Product.Name" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Color</label>
+        <InputText class="form-control" @bind-Value="Product.Color" />
+        <ValidationMessage For="() => Product.Color" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <InputTextArea class="form-control" @bind-Value="Product.Description" />
+        <ValidationMessage For="() => Product.Description" />
+    </div>
+    <div class="row pt-3">
+        <div class="btn-group col-6">
+            <div class="form-check">
+                <InputCheckbox @bind-Value="Product.ShopFavorites" class="form-check-input" />
+                <label class="form-check-label">Is Shop Favorites</label>
+            </div>
+        </div>
+        <div class="btn-group col-6">
+            <div class="form-check">
+                <InputCheckbox @bind-Value="Product.CustomerFavorites" class="form-check-input" />
+                <label class="form-check-label">Is Customer Favorites</label>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn @(Title == "Create" ? "btn-primary" : "btn-danger")">@Title</button>
+    <NavLink href="product" class="btn btn-secondary">Back to Product</NavLink>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private int Count;
+    private string Title { get; set; } = "Create";
+
+    private ProductDTO Product { get; set; } = new ProductDTO();
+    private IEnumerable<CategoryDTO> Categories { get; set; } = new List<CategoryDTO>();
+
+    private async Task UpsertProduct()
+    {
+        if (Id == 0) { await _pr.Create(Product); }
+        else { await _pr.Update(Product); }
+        _nm.NavigateTo("product");
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id != 0)
+        {
+            Product = await _pr.Get(Id);
+            Title = "Update";
+        }
+    }
+}
