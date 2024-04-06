@@ -25,7 +25,7 @@
                     <tr>
                         <td>@item.Name</td>
                         <td>
-                            <NavLink href=@($"/category/create/{item.Id}") class="btn-primary btn">Edit</NavLink>
+                            <NavLink href=@($"/category/edit/{item.Id}") class="btn-primary btn">Edit</NavLink>
                             <_DeleteConfirmation OnDeleteConfirm="@(()=>DeleteConfirm(item.Id))" />
                             @* <button @onclick="()=>ShowConfirm(item.Id)" class="btn-success btn">Delete</button> *@
                         </td>
