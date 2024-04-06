@@ -38,6 +38,8 @@ else
         <GridEvents OnActionBegin="ActionBeginHandler" TValue="ProductPriceDTO"></GridEvents>
         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
         <GridEditSettings AllowAdding="true" AllowEditing="true" ShowDeleteConfirmDialog="true" AllowDeleting="true"></GridEditSettings>
+        <GridPageSettings PageSize="5" PageCount="5" PageSizes="true"></GridPageSettings>
+        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
         <GridColumns>
             <GridColumn IsPrimaryKey="true" AllowAdding="false" Field=@nameof(ProductPriceDTO.Id) HeaderText="ID" TextAlign="TextAlign.Right" Width="120"></GridColumn>
             <GridColumn Field=@nameof(ProductPriceDTO.Size) HeaderText="Size">
