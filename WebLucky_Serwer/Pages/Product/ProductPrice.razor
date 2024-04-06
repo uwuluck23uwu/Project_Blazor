@@ -34,18 +34,18 @@ else
             <img src="@Product.ImageUrl" class="w-100">
         </div>
     </div>
-    <SfGrid DataSource="@ProductPrices" AllowPaging="true" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })" >
+    <SfGrid DataSource="@ProductPrices" AllowPaging="true" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })" @ref="productPriceGrid" >
         <GridEvents OnActionBegin="ActionBeginHandler" TValue="ProductPriceDTO"></GridEvents>
         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
         <GridEditSettings AllowAdding="true" AllowEditing="true" ShowDeleteConfirmDialog="true" AllowDeleting="true"></GridEditSettings>
         <GridColumns>
-            <GridColumn Field=@nameof(ProductPriceDTO.Id) HeaderText="ID" TextAlign="TextAlign.Right" Width="120"></GridColumn>
-            <GridColumn Field=@nameof(ProductPriceDTO.Size) HeaderText="Size" Width="150">
+            <GridColumn IsPrimaryKey="true" AllowAdding="false" Field=@nameof(ProductPriceDTO.Id) HeaderText="ID" TextAlign="TextAlign.Right" Width="120"></GridColumn>
+            <GridColumn Field=@nameof(ProductPriceDTO.Size) HeaderText="Size">
                 <EditTemplate>
                     <Syncfusion.Blazor.DropDowns.SfDropDownList DataSource="SizeList" TItem="string" TValue="string" @bind-Value="((context as ProductPriceDTO).Size)"></Syncfusion.Blazor.DropDowns.SfDropDownList>
                 </EditTemplate>
             </GridColumn>
-            <GridColumn Field=@nameof(ProductPriceDTO.Price) HeaderText="Price" Format="C2" TextAlign="TextAlign.Right" Width="130"></GridColumn>
+            <GridColumn ValidationRules="@(new ValidationRules{ Required = true, Min = 0})" Field=@nameof(ProductPriceDTO.Price) HeaderText="Price" Format="C2"></GridColumn>
         </GridColumns>
     </SfGrid>
 }
@@ -55,6 +55,7 @@ else
     public int Id { get; set; }
 
     private bool IsLoading { get; set; } = true;
+    public SfGrid<ProductPriceDTO> productPriceGrid;
     private ProductDTO Product { get; set; } = new();
     private IEnumerable<ProductPriceDTO> ProductPrices { get; set; } = new List<ProductPriceDTO>();
     IEnumerable<String> SizeList = new List<String>()
@@ -74,13 +75,17 @@ else
             StateHasChanged();
         }
     }
-    public void ActionBeginHandler(ActionEventArgs<ProductPriceDTO> args)
+    public async void ActionBeginHandler(ActionEventArgs<ProductPriceDTO> args)
     {
-        if (args.RequestType.ToString() == "Add")
+        if (args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
         {
-        }
-        else
-        {
+            args.Data.ProductId = Id;
+            if (args.Action == "Add")
+            {
+                await _productPriceRepository.Create(args.Data);
+                ProductPrices = await _productPriceRepository.GetAll(Id);
+                await productPriceGrid.Refresh();
+            }
         }
     }
 }
