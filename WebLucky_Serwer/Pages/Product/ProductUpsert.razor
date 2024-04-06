@@ -5,7 +5,7 @@
 @inject ICategoryRepository _cr
 @inject NavigationManager _nm
 
-<ToastMudComponent Open="@Open" Message="@Message" Toggle="@Toggle" />
+<ToastMudComponent Open="@Open" Message="@Message" Toggle="@(()=>{Open = false; Message = "";})" />
 <div class="row m-2">
     <div class="col-md-10 p-1">
         <EditForm Model="Product" OnValidSubmit="UpsertProduct">
@@ -71,8 +71,9 @@
     public bool Open { get; set; }
     public string? Message { get; set; }
     public string OldImageUrl { get; set; }
-    private string Title { get; set; } = "Create";
+    public IBrowserFile FileImage { get; set; }
 
+    private string Title { get; set; } = "Create";
     private ProductDTO Product { get; set; } = new ProductDTO();
     private IEnumerable<CategoryDTO> Categories { get; set; } = new List<CategoryDTO>();
 
@@ -88,6 +89,10 @@
     }
     private async Task UpsertProduct()
     {
+        if (FileImage is not null)
+        {
+            Product.ImageUrl = await _fu.UploadFile(FileImage);
+        }
         if (Id == 0) 
         {
             Open = true;
@@ -108,20 +113,25 @@
     }
     private async Task HandleImageUpload(InputFileChangeEventArgs e)
     {
+        var imagefiletypes = new List<string>() { ".png", ".jpg", ".jpeg" };
         try
         {
             if (e.GetMultipleFiles().Count > 0)
             {
                 foreach (var file in e.GetMultipleFiles())
                 {
-                    System.IO.FileInfo fileInfo = new System.IO.FileInfo(file.Name);
-                    if (fileInfo.Extension.ToLower() == ".jpg" || fileInfo.Extension.ToLower() == ".png" || fileInfo.Extension.ToLower() == ".jpeg")
+                    var extensionname = Path.GetExtension(file.Name).ToLower();
+                    if (imagefiletypes.Contains(extensionname))
                     {
-                        Product.ImageUrl = await _fu.UploadFile(file);
+                        FileImage = file;
+                        using Stream imageStream = file.OpenReadStream(1024 * 1024 * 10);
+                        using MemoryStream ms = new();
+                        await imageStream.CopyToAsync(ms);
+                        Product.ImageUrl = $"data:image/png;base64,{Convert.ToBase64String(ms.ToArray())}";
                     }
                     else
                     {
-                        Open = true; 
+                        Open = true;
                         Message = "Please select .jpg/.jpeg/.png file only";
                         return;
                     }
@@ -133,10 +143,5 @@
             Open = true;
             Message = ex.Message;
         }
-    }
-    public void Toggle()
-    {
-        Open = false;
-        Message = "";
     }
 }
