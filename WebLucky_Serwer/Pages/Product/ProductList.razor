@@ -21,7 +21,6 @@
                         <th>Customer Favorites</th>
                         <th>Category</th>
                         <th>ImageUrl</th>
-                        <th>Description</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -42,11 +41,9 @@
                             <th>
                             @if (!String.IsNullOrEmpty(item.ImageUrl)) { <img src="@item.ImageUrl" width="100px" /> }
                             </th>
-                            <th>
-                                @item.Description
-                            </th>
                             <td>
                                 <NavLink href="@($"product/edit/{item.Id}")" class="btn-primary btn">Edit</NavLink>
+                                <NavLink href="@($"product/price/{item.Id}")" class="btn-success btn">Price</NavLink>
                                 <_DeleteConfirmation OnDeleteConfirm="@(()=>DeleteConfirm(item.Id))" />
                             </td>
                         </tr>
