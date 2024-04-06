@@ -34,7 +34,7 @@ else
             <img src="@Product.ImageUrl" class="w-100">
         </div>
     </div>
-    <SfGrid DataSource="@ProductPrices" AllowPaging="true" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })" @ref="productPriceGrid" >
+    <SfGrid DataSource="@ProductPrices" AllowPaging="true" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })" >
         <GridEvents OnActionBegin="ActionBeginHandler" TValue="ProductPriceDTO"></GridEvents>
         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
         <GridEditSettings AllowAdding="true" AllowEditing="true" ShowDeleteConfirmDialog="true" AllowDeleting="true"></GridEditSettings>
