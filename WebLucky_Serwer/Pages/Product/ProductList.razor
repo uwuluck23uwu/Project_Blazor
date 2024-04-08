@@ -39,7 +39,7 @@
                                 @item.Category.Name
                             </th>
                             <th>
-                            @if (!String.IsNullOrEmpty(item.ImageUrl)) { <img src="@item.ImageUrl" width="100px" /> }
+                                @if (!String.IsNullOrEmpty(item.ImageUrl)) { <img src="@item.ImageUrl" width="100px" /> }
                             </th>
                             <td>
                                 <NavLink href="@($"product/edit/{item.Id}")" class="btn-primary btn">Edit</NavLink>

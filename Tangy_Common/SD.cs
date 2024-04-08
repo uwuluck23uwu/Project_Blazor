@@ -3,5 +3,6 @@
     public static class SD
     {
         public const string PRODUCTIMG = "\\images\\product";
+        public const string PRODUT_API = "/api/product";
     }
 }
