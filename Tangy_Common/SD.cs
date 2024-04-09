@@ -4,6 +4,7 @@
     {
         public const string PRODUCTIMG = "\\images\\product";
         public const string PRODUT_API = "/api/product";
+        public const string ORDER_API = "/api/order";
         public const string ShoppingCart = "ShoppingCart";
         public const string Status_Pending = "Pending";
         public const string Status_Confirmed = "Confirmed";
