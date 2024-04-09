@@ -106,7 +106,7 @@ else
         Product = await _productService.Get(ProductId);
         IsProcessing = false;
     }
-    private async Task SelectedProductPrice(MouseEventArgs e, int productPriceId)
+    private async void SelectedProductPrice(MouseEventArgs e, int productPriceId)
     {
         DetailsVM.ProductPrice = Product.ProductPrices.FirstOrDefault(u => u.Id == productPriceId);
         DetailsVM.SelectedProductPriceId = productPriceId;
