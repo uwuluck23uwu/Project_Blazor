@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tangy_Common", "Tangy_Commo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tangy_DataAccess_1", "Tangy_DataAccess_1\Tangy_DataAccess_1.csproj", "{4A26517A-9EFD-4856-8485-C487F4FB6CC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebLucky_API", "WebLucky_API\WebLucky_API.csproj", "{7B7F24D2-E050-454D-8DD5-8480C3A78C97}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebLucky_API", "WebLucky_API\WebLucky_API.csproj", "{7B7F24D2-E050-454D-8DD5-8480C3A78C97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

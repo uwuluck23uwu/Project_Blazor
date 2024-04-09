@@ -22,16 +22,15 @@ else
                                 <div class="col-8 h5">@product.Name</div>
                                 <div class="col-4 text-end">
                                     <span class="text-info h4">
-                                        @if (product.ProductPrices.Count > 0)
-                                        {
-                                            @product.ProductPrices.OrderBy(u => u.Price).FirstOrDefault().Price.ToString("c")
-                                        }
+                                        @* @if (product.ProductPrices.Count > 0)
+                                        { *@
+                                            @product.ProductPrices.OrderBy(u => u.Price).FirstOrDefault()?.Price.ToString("c")
+                                        @* } *@
                                     </span>
                                 </div>
                             </div>
                             @if (!String.IsNullOrEmpty(product.ImageUrl))
                             {
-                                <p>@product.ImageUrl</p>
                                 <img class="card-img-top img-fluid d-block mx-auto mb-3" src="@product.ImageUrl">
                             }
                             <div class="card-body p-1 px-3 row">
@@ -45,7 +44,7 @@ else
                                     <p>@((MarkupString)product.Description)</p>
                                 </div>
                                 <div class="col-12 p-1">
-                                    <a href="" class="btn btn-dark form-control btn-sm p-2" style="height:40px">View Details</a>
+                                    <NavLink href=@($"/details/{product.Id}") class="btn btn-dark form-control btn-sm p-2" style="height:40px">View Details</NavLink>
                                 </div>
                             </div>
                         </div>
