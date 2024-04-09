@@ -13,6 +13,7 @@ namespace WebLucky_Client.Service
             _localStorage = localStorageService;
         }
 
+        public event Action OnChange;
         public async Task IncrementCart(ShoppingCart shoppingCart)
         {
             var cart = await _localStorage.GetItemAsync<List<ShoppingCart>>(SD.ShoppingCart);
@@ -39,6 +40,7 @@ namespace WebLucky_Client.Service
                 });
             }
             await _localStorage.SetItemAsync(SD.ShoppingCart, cart);
+            OnChange?.Invoke();
         }
 
         public async Task DecrementCart(ShoppingCart shoppingCart)
@@ -59,6 +61,7 @@ namespace WebLucky_Client.Service
                 }
             }
             await _localStorage.SetItemAsync(SD.ShoppingCart, cart);
+            OnChange?.Invoke();
         }
     }
 }

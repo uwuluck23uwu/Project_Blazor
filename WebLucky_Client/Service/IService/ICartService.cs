@@ -6,5 +6,6 @@ namespace WebLucky_Client.Service.IService
     {
         Task DecrementCart(ShoppingCart shoppingCart);
         Task IncrementCart(ShoppingCart shoppingCart);
+        public event Action OnChange;
     }
 }
