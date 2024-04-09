@@ -48,7 +48,7 @@ namespace WebLucky_Client.Service
             {
                 if (cart[i].ProductId == shoppingCart.ProductId && cart[i].ProductPriceId == shoppingCart.ProductPriceId)
                 {
-                    if (cart[i].Count == 1 || cart[i].Count == 0)
+                    if (cart[i].Count <= 1 || shoppingCart.Count == 0)
                     {
                         cart.Remove(cart[i]);
                     }
