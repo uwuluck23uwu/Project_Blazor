@@ -2,6 +2,7 @@
 @page "/category/edit/{Id:int}"
 @inject ICategoryRepository _cr
 @inject NavigationManager _nm
+@attribute [Authorize]
 
 <EditForm Model="Category" OnValidSubmit="UpsertCategory">
     <DataAnnotationsValidator />

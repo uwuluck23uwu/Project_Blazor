@@ -1,6 +1,7 @@
 ﻿@page "/product"
 @inject IFileUpload _fu
 @inject IProductRepository _pr
+@attribute [Authorize]
 
 <ToastMudComponent Open="@Open" Message="@Message" Toggle="@Toggle" />
 @if (Products.Any())

@@ -4,6 +4,7 @@
 @inject IProductRepository _pr
 @inject ICategoryRepository _cr
 @inject NavigationManager _nm
+@attribute [Authorize]
 
 <ToastMudComponent Open="@Open" Message="@Message" Toggle="@(()=>{Open = false; Message = "";})" />
 <div class="row m-2">

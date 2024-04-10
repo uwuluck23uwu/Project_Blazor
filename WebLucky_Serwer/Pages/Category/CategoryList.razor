@@ -1,6 +1,7 @@
 ﻿@page "/category"
 @inject ICategoryRepository _cr
 @inject IJSRuntime _js
+@attribute [Authorize]
 
 @* <_DeleteConfirmation OnDeleteConfirm="@DeleteConfirm" /> *@
 <div class="row mt-4">
