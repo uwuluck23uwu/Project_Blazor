@@ -8,7 +8,6 @@ using Tangy_Business.Repository;
 using Tangy_Business.Repository.IRepository;
 using Syncfusion.Blazor;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzIwNzMxMUAzMjM1MmUzMDJlMzBYeXN6Y2dwZHdjektVMTVsQmtvSWplbmJMWVdzc1FkWXpETGFaUzVScHNRPQ==");
 
