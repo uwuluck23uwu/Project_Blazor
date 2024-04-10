@@ -1,7 +1,7 @@
 ﻿@page "/product"
 @inject IFileUpload _fu
 @inject IProductRepository _pr
-@attribute [Authorize]
+@inject NavigationManager _navigationManager
 
 <ToastMudComponent Open="@Open" Message="@Message" Toggle="@Toggle" />
 @if (Products.Any())
@@ -80,13 +80,24 @@ else
 }
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+    private IEnumerable<ProductDTO> Products { get; set; } = new List<ProductDTO>();
+
     public bool Open { get; set; }
     public int deleteId { get; set; }
     public string? Message { get; set; }
     public bool IsLoading { get; set; } = true;
 
-    private IEnumerable<ProductDTO> Products { get; set; } = new List<ProductDTO>();
-
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationState;
+        if (!authState.User.Identity.IsAuthenticated)
+        {
+            var uri = new Uri(_navigationManager.Uri); //จดจำเส้นทางปัจจุบัน
+            _navigationManager.NavigateTo($"/identity/account/login?returnUrl={uri.LocalPath}", forceLoad: true);
+        }
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)

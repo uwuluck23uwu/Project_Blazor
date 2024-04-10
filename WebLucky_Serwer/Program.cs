@@ -23,6 +23,7 @@ builder.Services.AddDbContext<ApplicationDbContext>();
 
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<IFileUpload, FileUpload>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductPriceRepository, ProductPriceRepository>();
@@ -44,7 +45,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireDigit = false;
-}).AddEntityFrameworkStores<ApplicationDbContext>();
+}).AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 var app = builder.Build();
 
