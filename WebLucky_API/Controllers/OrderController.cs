@@ -42,5 +42,15 @@ namespace WebLucky_API.Controllers
             }
             return Ok(orderDTO);
         }
+
+        [HttpPost]
+        [ActionName("Create")]
+        public async Task<IActionResult> Create([FromBody] StripePaymentDTO paymentDTO)
+        {
+            paymentDTO.Order.OrderHeader.OrderDate = DateTime.Now;
+
+            var result = await _orderRepository.Create(paymentDTO.Order);
+            return Ok(result);
+        }
     }
 }
