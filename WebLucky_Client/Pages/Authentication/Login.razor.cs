@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Web;
 using WebLucky_Client.Service.IService;
 
 namespace WebLucky_Client.Pages.Authentication
@@ -6,9 +7,10 @@ namespace WebLucky_Client.Pages.Authentication
     public partial class Login
     {
         private SignInRequestDTO SignInRequest = new();
-        public bool IsProcessing { get; set; } = false;
-        public bool ShowSignInErrors { get; set; }
         public string Errors { get; set; }
+        public string ReturnUrl { get; set; }
+        public bool ShowSignInErrors { get; set; }
+        public bool IsProcessing { get; set; } = false;
 
         [Inject]
         public IAuthenticationService _authService { get; set; }
@@ -22,9 +24,17 @@ namespace WebLucky_Client.Pages.Authentication
             var result = await _authService.Login(SignInRequest);
             if (result.IsAuthSuccessful)
             {
-                //await _authService.Logout();
-                //_navigationManager.NavigateTo("/");
-                _navigationManager.NavigateTo("/", forceLoad: true);
+                var absoluteUri = new Uri(_navigationManager.Uri);
+                var queryParam = HttpUtility.ParseQueryString(absoluteUri.Query);
+                ReturnUrl = queryParam["returnUrl"];
+                if (string.IsNullOrEmpty(ReturnUrl))
+                {
+                    _navigationManager.NavigateTo("/");
+                }
+                else
+                {
+                    _navigationManager.NavigateTo("/" + ReturnUrl);
+                }
             }
             else
             {
