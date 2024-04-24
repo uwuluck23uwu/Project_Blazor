@@ -21,7 +21,7 @@ namespace WebLucky_API.Controllers
         {
             try
             {
-                var domain = _configuration.GetValue<string>("Tangy_Client_URL");
+                var domain = _configuration.GetValue<string>("WebLucky_Client_URL");
                 //session stripe .net : https://stripe.com/docs/api/checkout/sessions/create?lang=dotnet
                 //Stripe-hosted page : https://stripe.com/docs/checkout/quickstart?lang=dotnet
                 var options = new SessionCreateOptions
