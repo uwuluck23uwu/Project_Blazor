@@ -47,7 +47,7 @@ else
             </GridSortColumns>
         </GridSortSettings>
         <GridColumns>
-            <GridColumn IsPrimaryKey="true" AllowAdding="false" Field=@nameof(ProductPriceDTO.Id) HeaderText="ID" TextAlign="TextAlign.Right" Width="120"></GridColumn>
+            <GridColumn IsPrimaryKey="true" AllowAdding="false" Field=@nameof(ProductPriceDTO.Id) HeaderText="ID" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="120"></GridColumn>
             <GridColumn Field=@nameof(ProductPriceDTO.Size) HeaderText="Size">
                 <EditTemplate>
                     <Syncfusion.Blazor.DropDowns.SfDropDownList DataSource="SizeList" TItem="string" TValue="string" @bind-Value="((context as ProductPriceDTO).Size)"></Syncfusion.Blazor.DropDowns.SfDropDownList>

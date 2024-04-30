@@ -19,5 +19,7 @@ namespace Tangy_DataAccess_1
         public string City { get; set; }
         public string PostalCode { get; set; }
         public string Email { get; set; }
+        public string? Tracking { get; set; }
+        public string? Carrier { get; set; }
     }
 }

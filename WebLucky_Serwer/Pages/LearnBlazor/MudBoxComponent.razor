@@ -1,7 +1,7 @@
 ﻿@page "/LearnBlazor/MudBoxComponent"
 
 @* Variant ระบายสี ซ Color สีอะไร *@
-<MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="OnButtonClicked">Delete</MudButton>
+<MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Error" OnClick="OnButtonClicked">Delete</MudButton>
 <MudChip>@state</MudChip>
 
     <MudMessageBox @ref="mbox" Title="Warning" CancelText="Cancel">
@@ -9,7 +9,7 @@
             Deleting can <b><i>not</i></b> be undone!
         </MessageContent>
         <YesButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteForever">Delete!</MudButton>
+            <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteForever">Delete!</MudButton>
         </YesButton>
     </MudMessageBox>
 

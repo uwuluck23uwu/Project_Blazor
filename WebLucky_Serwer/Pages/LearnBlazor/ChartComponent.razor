@@ -4,9 +4,9 @@
     <MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="Index" InputData="@data" InputLabels="@labels"></MudChart>
 </MudPaper>
 <MudPaper Class="pa-4 mt-2 d-flex justify-center">
-    <MudButton OnClick="AddDataSize" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
-    <MudButton @onclick="RandomizeData" Variant="Variant.Filled" Class="mx-4">Randomize</MudButton>
-    <MudButton OnClick="RemoveDataSize" Variant="Variant.Filled" Color="Color.Secondary">Remove</MudButton>
+    <MudButton OnClick="AddDataSize" Variant="MudBlazor.Variant.Filled" Color="Color.Primary">Add</MudButton>
+    <MudButton @onclick="RandomizeData" Variant="MudBlazor.Variant.Filled" Class="mx-4">Randomize</MudButton>
+    <MudButton OnClick="RemoveDataSize" Variant="MudBlazor.Variant.Filled" Color="Color.Secondary">Remove</MudButton>
 </MudPaper>
 <MudText Typo="Typo.h6">Selected portion of the chart: @Index</MudText>
 
