@@ -85,7 +85,7 @@ namespace Tangy_Business.Repository
             }
             return _mapper.Map<IEnumerable<Order>, IEnumerable<OrderDTO>>(OrderFromDb);
         }
-        public async Task<OrderHeaderDTO> MarkPaymentSuccessful(int id)
+        public async Task<OrderHeaderDTO> MarkPaymentSuccessful(int id, string paymentIntentId)
         {
             var data = await _db.OrderHeaders.FindAsync(id);
             if (data == null)
@@ -94,6 +94,7 @@ namespace Tangy_Business.Repository
             }
             if (data.Status == SD.Status_Pending)
             {
+                data.PaymentIntentId = paymentIntentId;
                 data.Status = SD.Status_Confirmed;
                 await _db.SaveChangesAsync();
                 return _mapper.Map<OrderHeader, OrderHeaderDTO>(data);
@@ -104,10 +105,18 @@ namespace Tangy_Business.Repository
         {
             if (objDTO != null)
             {
-                var OrderHeader = _mapper.Map<OrderHeaderDTO, OrderHeader>(objDTO);
-                _db.OrderHeaders.Update(OrderHeader);
+                var orderHeaderFromDb = _db.OrderHeaders.FirstOrDefault(u => u.Id == objDTO.Id);
+                orderHeaderFromDb.Name = objDTO.Name;
+                orderHeaderFromDb.PhoneNumber = objDTO.PhoneNumber;
+                orderHeaderFromDb.Carrier = objDTO.Carrier;
+                orderHeaderFromDb.Tracking = objDTO.Tracking;
+                orderHeaderFromDb.StreetAddress = objDTO.StreetAddress;
+                orderHeaderFromDb.City = objDTO.City;
+                orderHeaderFromDb.State = objDTO.State;
+                orderHeaderFromDb.PostalCode = objDTO.PostalCode;
+                orderHeaderFromDb.Status = objDTO.Status;
                 await _db.SaveChangesAsync();
-                return _mapper.Map<OrderHeader, OrderHeaderDTO>(OrderHeader);
+                return _mapper.Map<OrderHeader, OrderHeaderDTO>(orderHeaderFromDb);
             }
             return new OrderHeaderDTO();
         }

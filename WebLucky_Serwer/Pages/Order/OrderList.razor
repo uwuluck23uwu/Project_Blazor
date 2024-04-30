@@ -6,15 +6,15 @@
     <h4 class="card-title text-info">Order's List</h4>
     @if (OrderHeaders.Any())
     {
-        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="Radzen.HorizontalAlign.Left" ShowPagingSummary="true"
-                        Data="OrderHeaders" TItem="OrderHeaderDTO" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="Radzen.HorizontalAlign.Left" ShowPagingSummary="true" Data="OrderHeaders" TItem="OrderHeaderDTO" LogicalFilterOperator="LogicalFilterOperator.Or">
             <Columns>
                 <RadzenDataGridColumn Property="Id" Filterable="false" Title="ID" Frozen="true" Width="80px" />
-                <RadzenDataGridColumn Property="Name" Title="Name" Frozen="true" Width="140px" />
-                <RadzenDataGridColumn Property="PhoneNumber" Title="Phone Number" Width="140px" />
-                <RadzenDataGridColumn Property="Email" Title="Email" Width="140px" />
-                <RadzenDataGridColumn Property="OrderTotal" Title="Order Total" Width="140px" />
-                <RadzenDataGridColumn Property="OrderDate" Title="Order Date" FormatString="{0:d}" Width="140px" />
+                <RadzenDataGridColumn Property="Name" Title="Name" Frozen="true" />
+                <RadzenDataGridColumn Property="PhoneNumber" Title="Phone" />
+                <RadzenDataGridColumn Property="Email" Title="Email" />
+                <RadzenDataGridColumn Property="OrderTotal" Title="Order Total" />
+                <RadzenDataGridColumn Property="OrderDate" Title="Order Date" FormatString="{0:d}" />
+                <RadzenDataGridColumn Property="Status" Title="Status" />
                 <RadzenDataGridColumn Title="Details">
                     <Template Context="data">
                         <RadzenButton Click="(args=> OrderDetails(data.Id))" Text="Details" ButtonStyle="ButtonStyle.Success"></RadzenButton>
@@ -22,7 +22,6 @@
                 </RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
-
     }
 </div>
 
