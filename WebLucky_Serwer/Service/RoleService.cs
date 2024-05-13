@@ -60,7 +60,5 @@ namespace WebLucky_Serwer.Service
             if (!result.Succeeded) return false;
             return true;
         }
-
     }
-
 }

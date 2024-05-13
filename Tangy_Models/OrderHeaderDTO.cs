@@ -40,6 +40,5 @@ namespace Tangy_Models
         public string Email { get; set; }
         public string? Tracking { get; set; }
         public string? Carrier { get; set; }
-
     }
 }

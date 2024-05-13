@@ -1,6 +1,6 @@
 ﻿@page "/category"
 @inject ICategoryRepository _cr
-@inject IJSRuntime _js
+@* @inject IJSRuntime _js *@
 @attribute [Authorize]
 
 @* <_DeleteConfirmation OnDeleteConfirm="@DeleteConfirm" /> *@
@@ -82,11 +82,11 @@
         IsLoading = false;
         StateHasChanged();
     }
-    private async Task ShowConfirm(int id)
-    {
-        deleteId = id;
-        await _js.InvokeVoidAsync("ShowDeleteConfirmationModal");
-    }
+    // private async Task ShowConfirm(int id)
+    // {
+    //     deleteId = id;
+    //     await _js.InvokeVoidAsync("ShowDeleteConfirmationModal");
+    // }
     public async Task DeleteConfirm(int deleteId)
     {
         if (deleteId != 0)

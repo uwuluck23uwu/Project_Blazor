@@ -12,7 +12,7 @@ namespace Tangy_DataAccess_1.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("Server=DESKTOP-M71R1CT\\SQLEXPRESS; Database=Test_Blazor;" +
+            optionsBuilder.UseSqlServer("Server=DESKTOP-M71R1CT\\SQLEXPRESS; Database=Blazor_Test;" +
                 "Trusted_connection=true; TrustServerCertificate=true");
         }
 

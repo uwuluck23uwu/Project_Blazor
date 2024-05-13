@@ -1,5 +1,5 @@
 ﻿@page "/"
-@inject IProductService _productService
+@inject IProductService _ps
 
 @if (IsProcessing)
 {
@@ -62,7 +62,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         IsProcessing = true;
-        Products = await _productService.GetAll();
+        Products = await _ps.GetAll();
         IsProcessing = false;
     }
 }

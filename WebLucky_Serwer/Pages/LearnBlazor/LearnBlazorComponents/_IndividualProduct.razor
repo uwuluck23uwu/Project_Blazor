@@ -22,6 +22,7 @@
     public Demo_Product prod { get; set; }
     [Parameter]
     public EventCallback<bool> OnFavCheck { get; set; }
+
     public async Task FavUpdate(Microsoft.AspNetCore.Components.ChangeEventArgs changeEventArgs)
     {
         await OnFavCheck.InvokeAsync((bool)changeEventArgs.Value);

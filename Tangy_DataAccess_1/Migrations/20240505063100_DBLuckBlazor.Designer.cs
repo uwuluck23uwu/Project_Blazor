@@ -12,8 +12,8 @@ using Tangy_DataAccess_1.Data;
 namespace Tangy_DataAccess_1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240410081456_AddUser")]
-    partial class AddUser
+    [Migration("20240505063100_DBLuckBlazor")]
+    partial class DBLuckBlazor
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,6 +89,10 @@ namespace Tangy_DataAccess_1.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -140,6 +144,10 @@ namespace Tangy_DataAccess_1.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -277,8 +285,6 @@ namespace Tangy_DataAccess_1.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
-
                     b.ToTable("OrderDetails");
                 });
 
@@ -289,6 +295,9 @@ namespace Tangy_DataAccess_1.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Carrier")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -335,6 +344,9 @@ namespace Tangy_DataAccess_1.Migrations
 
                     b.Property<string>("StreetAddress")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tracking")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
@@ -411,6 +423,17 @@ namespace Tangy_DataAccess_1.Migrations
                     b.ToTable("ProductPrices");
                 });
 
+            modelBuilder.Entity("Tangy_DataAccess_1.ApplicationUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("ApplicationUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -460,17 +483,6 @@ namespace Tangy_DataAccess_1.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Tangy_DataAccess_1.OrderDetail", b =>
-                {
-                    b.HasOne("Tangy_DataAccess_1.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Tangy_DataAccess_1.Product", b =>
