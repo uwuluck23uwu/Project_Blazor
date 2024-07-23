@@ -18,12 +18,12 @@ namespace WebLucky_Client.Service
 
         public async Task<ProductDTO> Get(int productId)
         {
-            var response = await _httpClient.GetAsync($"{SD.PRODUT_API}/get/{productId}");
+            var response = await _httpClient.GetAsync($"{SD.PAGE_API}{SD.PRODUT_API}/get/{productId}");
             var content = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
                 var product = JsonConvert.DeserializeObject<ProductDTO>(content);
-                product.ImageUrl = BaseServerUrl + product.ImageUrl;
+                product.ImageUrl = BaseServerUrl + SD.PRODUCTIMG + "/" + product.ImageUrl;
                 return product;
             }
             else
@@ -34,14 +34,14 @@ namespace WebLucky_Client.Service
         }
         public async Task<IEnumerable<ProductDTO>> GetAll()
         {
-            var response = await _httpClient.GetAsync($"{SD.PRODUT_API}/getall");
+            var response = await _httpClient.GetAsync($"{SD.PAGE_API}{SD.PRODUT_API}/getall");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
                 var products = JsonConvert.DeserializeObject<IEnumerable<ProductDTO>>(content);
                 foreach (var prod in products)
                 {
-                    prod.ImageUrl = BaseServerUrl + prod.ImageUrl;
+                    prod.ImageUrl = BaseServerUrl + SD.PRODUCTIMG + "/" + prod.ImageUrl;
                 }
                 return products;
             }

@@ -1,111 +1,103 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">WebLucky_Serwer</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
+﻿<div class="mud-theme-dark py-5">
+    <MudContainer Class="container-fluid">
+        <AuthorizeView Roles="@roleAdmin">
+            <Authorized>
+                <MudText Align="Align.Left" Style="color: #EDE7F6;">
+                    <MudIcon Icon="@Icons.Material.Filled.Settings" />
+                    MEMU [Admin]
+                </MudText>
+            </Authorized>
+            <NotAuthorized>
+                <MudText Align="Align.Left" Style="color: #EDE7F6;">
+                    <MudIcon Icon="@Icons.Material.Filled.Settings" Style="margin-right: 6px;" />
+                    MEMU [User]
+                </MudText>
+            </NotAuthorized>
+        </AuthorizeView>
+    </MudContainer>
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/learnblazor/bindprop">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/learnBlazor/demoproduct">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Demo Product
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/learnblazor/parentcomponent">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Render Fragment
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/learnBlazor/learnRouting">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Learn Routing
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/learnBlazor/blazorJs">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> BlazorJs
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/LearnBlazor/MudBoxComponent">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Mud Box
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/LearnBlazor/ToastComponent">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Mud Toast
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/LearnBlazor/ChartComponent">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Mud Chart
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/LearnBlazor/BlazorJs">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Blazor Js
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="learnBlazor/Lifecycle">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Life Cycle Method
-            </NavLink>
-        </div>
-        <AuthorizeView Roles="@roleAdmin">
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="/category">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> Category
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="/product">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> Product
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="/orderlist">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> Orders
-                </NavLink>
-            </div>
-        </AuthorizeView>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/role">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Role
-            </NavLink>
-        </div>
-    </nav>
+<div class="hover_color mud-theme-default py-3">
+    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+        <MudText Color="Color.Dark">
+            <MudIcon Class="hover_color_icon" Icon="@Icons.Material.Filled.Home" Style="margin-bottom: 5px; margin-right: 20px;" />
+            Home
+        </MudText>
+    </NavLink>
 </div>
+<AuthorizeView>
+    <Authorized>
+        <div class="hover_color mud-theme-default py-3">
+            <NavLink class="nav-link" href="@($"{SD.PAGE_SERVER}/role")" Match="NavLinkMatch.All">
+                <MudText Color="Color.Dark">
+                    <MudIcon Class="hover_color_icon" Icon="@Icons.Material.Filled.LockPerson" Style="margin-bottom: 5px; margin-right: 20px;" />
+                    Role
+                </MudText>
+            </NavLink>
+        </div>
+        <div class="hover_color mud-theme-default py-3">
+            <NavLink class="nav-link" href="@($"{SD.PAGE_SERVER}/category")" Match="NavLinkMatch.All">
+                <MudText Color="Color.Dark">
+                    <MudIcon Class="hover_color_icon" Icon="@Icons.Material.Filled.Add" Style="margin-bottom: 5px; margin-right: 20px;" />
+                    Category
+                </MudText>
+            </NavLink>
+        </div>
+        <div class="hover_color mud-theme-default py-3">
+            <NavLink class="nav-link" href="@($"{SD.PAGE_SERVER}/product")" Match="NavLinkMatch.All">
+                <MudText Color="Color.Dark">
+                    <MudIcon Class="hover_color_icon" Icon="@Icons.Material.Filled.Add" Style="margin-bottom: 5px; margin-right: 20px;" />
+                    Product
+                </MudText>
+            </NavLink>
+        </div>
+        <div class="hover_color mud-theme-default py-3">
+            <NavLink class="nav-link" href="@($"{SD.PAGE_SERVER}/orderlist")" Match="NavLinkMatch.All">
+                <MudText Color="Color.Dark">
+                    <MudIcon Class="hover_color_icon" Icon="@Icons.Material.Filled.Add" Style="margin-bottom: 5px; margin-right: 20px;" />
+                    Orders
+                </MudText>
+            </NavLink>
+        </div>
+        <div class="hover_color mud-theme-default py-3">
+            <NavLink class="nav-link" href="@($"{SD.PAGE_SERVER}/graph")" Match="NavLinkMatch.All">
+                <MudText Color="Color.Dark">
+                    <MudIcon Class="hover_color_icon" Icon="@Icons.Material.Filled.Add" Style="margin-bottom: 5px; margin-right: 20px;" />
+                    Graph
+                </MudText>
+            </NavLink>
+        </div>
+        <div class="hover_color mud-theme-default py-3">
+            <NavLink class="nav-link" href="Identity/Account/Logout" Match="NavLinkMatch.All">
+                <MudText Color="Color.Dark">
+                    <MudIcon Class="hover_color_icon" Icon="@Icons.Material.Filled.Logout" Style="margin-bottom: 5px; margin-right: 20px;" />
+                    Logout
+                </MudText>
+            </NavLink>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="hover_color mud-theme-default py-3">
+            <NavLink class="nav-link" href="Identity/Account/Register" Match="NavLinkMatch.All">
+                <MudText Color="Color.Dark">
+                    <MudIcon Class="hover_color_icon" Icon="@Icons.Material.Filled.Logout" Style="margin-bottom: 5px; margin-right: 20px;" />
+                    Register
+                </MudText>
+            </NavLink>
+        </div>
+        <div class="hover_color mud-theme-default py-3">
+            <NavLink class="nav-link" href="Identity/Account/Login" Match="NavLinkMatch.All">
+                <MudText Color="Color.Dark">
+                    <MudIcon Class="hover_color_icon" Icon="@Icons.Material.Filled.Logout" Style="margin-bottom: 5px; margin-right: 20px;" />
+                    Login
+                </MudText>
+            </NavLink>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private bool collapseNavMenu = true;
     private string roleAdmin = Tangy_Common.SD.Role_Admin;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
 }

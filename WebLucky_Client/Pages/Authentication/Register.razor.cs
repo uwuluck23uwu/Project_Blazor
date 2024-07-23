@@ -22,7 +22,7 @@ namespace WebLucky_Client.Pages.Authentication
             var result = await _authService.RegisterUser(SignUpRequest);
             if (result.IsRegisterationSuccessful)
             {
-                _navigationManager.NavigateTo("/login");
+                _navigationManager.NavigateTo($"/cs66/blazor/s08/BlazorClient/login");
             }
             else
             {

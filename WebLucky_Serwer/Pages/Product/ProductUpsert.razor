@@ -4,77 +4,71 @@
 @inject IProductRepository _pr
 @inject ICategoryRepository _cr
 @inject NavigationManager _nm
-@attribute [Authorize]
+@attribute [Authorize(Roles = SD.Role_Admin)]
 
-<ToastMudComponent Open="@Open" Message="@Message" Toggle="@(()=>{Open = false; Message = "";})" />
-<div class="row m-2">
-    <div class="col-md-10 p-1">
-        <EditForm Model="Product" OnValidSubmit="UpsertProduct">
-            <DataAnnotationsValidator />
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <InputText class="form-control" @bind-Value="Product.Name" />
-                <ValidationMessage For="() => Product.Name" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Color</label>
-                <InputText class="form-control" @bind-Value="Product.Color" />
-                <ValidationMessage For="() => Product.Color" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Description</label>
-                <SfRichTextEditor class="form-control" @bind-Value="Product.Description" />
-                <ValidationMessage For="() => Product.Description" />
-            </div>
-            <div class="row pt-3">
-                <div class="btn-group col-6">
-                    <div class="form-check">
-                        <InputCheckbox @bind-Value="Product.ShopFavorites" class="form-check-input" />
-                        <label class="form-check-label">Is Shop Favorites</label>
-                    </div>
-                </div>
-                <div class="btn-group col-6">
-                    <div class="form-check">
-                        <InputCheckbox @bind-Value="Product.CustomerFavorites" class="form-check-input" />
-                        <label class="form-check-label">Is Customer Favorites</label>
-                    </div>
-                </div>
-                <div class="form-group col-6">
-                    <label>Category</label>
-                    <InputSelect @bind-Value="Product.CategoryId" class="form-select">
-                        <option value="0" disabled="disabled" selected>--Select Category--</option>
-                        @foreach (var cat in Categories)
-                        {
-                            <option value="@cat.Id">@cat.Name</option>
-                        }
-                    </InputSelect>
-                    <ValidationMessage For="()=>Product.CategoryId"></ValidationMessage>
-                </div>
-                <div class="form-group col-6">
-                    <InputFile OnChange="HandleImageUpload" />
-                </div>
-            </div>
-
-            <button type="submit" class="btn @(Title == "Create" ? "btn-primary" : "btn-danger")">@Title</button>
-            <NavLink href="product" class="btn btn-secondary">Back to Product</NavLink>
-        </EditForm>
-    </div>
-    <div class="col-md-2 p-1">
-        <img src="@Product.ImageUrl" class="w-100 rounded-3">
-    </div>
-</div>
+<ToastMudComponent Open="@Open" Message="@Message" Alert="@Alert" Toggle="@(()=>{Open = false; Message = "";})" />
+<MudContainer Fixed="true">
+    <MudText Typo="Typo.h4" Style="margin-top: 2%; margin-left: 4%;">
+        Product | @(Title == "Create" ? "Create" : "Update")
+    </MudText>
+    <EditForm Model="@Product" OnValidSubmit="UpsertProduct">
+        <DataAnnotationsValidator />
+        <MudGrid Style="margin-top: 2%;">
+            <MudItem xs="12" md="7">
+                <MudCard Class="pa-4">
+                    <MudCardContent>
+                        <MudTextField Label="Name" Required="true" RequiredError="โปรดป้อนข้อมูล!" @bind-Value="Product.Name" />
+                        <ValidationMessage For="()=>Product.Name"></ValidationMessage>
+                        <MudTextField Label="Color" Required="true" RequiredError="โปรดป้อนข้อมูล!" @bind-Value="Product.Color" />
+                        <MudTextField Label="Description" Required="true" RequiredError="โปรดป้อนข้อมูล!" @bind-Value="Product.Description" />
+                        <ValidationMessage For="()=>Product.Description"></ValidationMessage>
+                        <MudSelect T="int" Label="Category" AnchorOrigin="Origin.BottomCenter" Style="margin-top: 20px" @bind-Value="Product.CategoryId">
+                            <MudSelectItem Value="0" Disabled="true">Select Category*</MudSelectItem>
+                            @foreach (var cat in Categories)
+                            {
+                                <MudSelectItem Value="cat.Id">@cat.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <ValidationMessage For="()=>Product.CategoryId"></ValidationMessage>
+                        <MudFileUpload T="IBrowserFile" OnFilesChanged="HandleImageUpload" Style="margin-top: 50px; margin-bottom: 30px;">
+                            <ButtonTemplate Context="item">
+                                <MudFab HtmlTag="label" Color="@(Title == "Create" ? Color.Secondary : Color.Tertiary)" Icon="@Icons.Material.Filled.Image" Label="Load picture" for="@item.Id" />
+                            </ButtonTemplate>
+                        </MudFileUpload>
+                        <MudCardActions Class="d-flex align-center justify-space-between">
+                            <MudItem>
+                                <MudCheckBox T="bool" Required="false" Label="Is Shop Favorites" @bind-Value="Product.ShopFavorites" />
+                                <MudCheckBox T="bool" Required="false" Label="Is Customer Favorites" @bind-Value="Product.CustomerFavorites" />
+                            </MudItem>
+                            <MudItem>
+                                <MudButton Color="@(Title == "Create" ? Color.Secondary : Color.Tertiary)" Variant="MudBlazor.Variant.Filled" Size="Size.Large" Class="ml-auto" ButtonType="MudBlazor.ButtonType.Submit">@(Title == "Create" ? "Create" : "Update")</MudButton>
+                                <MudButton Color="Color.Warning" Variant="MudBlazor.Variant.Filled" Size="Size.Large" Href="product" Style="margin-left: 10px;">Back</MudButton>
+                            </MudItem>
+                        </MudCardActions>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudPaper Class="pa-4 mud-height-full d-flex flex-column align-items-center">
+                    <MudText Typo="Typo.h4">Image</MudText>
+                    <MudImage Src="@Product.ImageUrl" Width="200" Alt="Product Image" Elevation="25" Class="rounded-lg ma-8" />
+                </MudPaper> 
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+</MudContainer>
 
 @code {
     [Parameter]
     public int Id { get; set; }
     private int Count;
     public bool Open { get; set; }
+    public string? Alert { get; set; }
     public string? Message { get; set; }
     public string OldImageUrl { get; set; }
     public IBrowserFile FileImage { get; set; }
-
     private string Title { get; set; } = "Create";
-    private ProductDTO Product { get; set; } = new ProductDTO();
+    private ProductDTO Product { get; set; } = new() { ImageUrl = $"{SD.PAGE_SERVER}/default.png" };
     private IEnumerable<CategoryDTO> Categories { get; set; } = new List<CategoryDTO>();
 
     protected override async Task OnInitializedAsync()
@@ -85,6 +79,7 @@
             Title = "Update";
             Product = await _pr.Get(Id);
             OldImageUrl = Product.ImageUrl;
+            Product.ImageUrl = SD.PAGE_SERVER + SD.PRODUCTIMG + "/" + Product.ImageUrl;
         }
     }
     private async Task UpsertProduct()
@@ -93,20 +88,22 @@
         {
             Product.ImageUrl = await _fu.UploadFile(FileImage);
         }
-        if (Id == 0) 
+        if (Id == 0)
         {
             Open = true;
-            Message = "Product created successfully.";
-            await _pr.Create(Product); 
+            Alert = "Success";
+            Message = "สร้างผลิตภัณฑ์สำเร็จแล้ว";
+            await _pr.Create(Product);
         }
-        else 
+        else
         {
             if (OldImageUrl != Product.ImageUrl)
             {
                 _fu.DeleteFile(OldImageUrl);
             }
             Open = true;
-            Message = "Product updated successfully.";
+            Alert = "Success";
+            Message = "อัปเดตผลิตภัณฑ์เรียบร้อยแล้ว";
             await _pr.Update(Product);
         }
         _nm.NavigateTo("product");
@@ -132,7 +129,8 @@
                     else
                     {
                         Open = true;
-                        Message = "Please select .jpg/.jpeg/.png file only";
+                        Alert = "Warning";
+                        Message = "กรุณาเลือกไฟล์ .jpg/.jpeg/.png เท่านั้น";
                         return;
                     }
                 }
@@ -141,6 +139,7 @@
         catch (Exception ex)
         {
             Open = true;
+            Alert = "Error";
             Message = ex.Message;
         }
     }

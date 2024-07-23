@@ -24,11 +24,9 @@ namespace WebLucky_Serwer.Service
 
         public async Task<string> UploadFile(IBrowserFile file)
         {
-            //สร้างชื่อไฟล์
             FileInfo fileInfo = new(file.Name);
             var fileName = Guid.NewGuid().ToString() + fileInfo.Extension;
 
-            //โฟลเดอร์จัดเก็บ
             var folderDirectory = $"{_webHostEnvironment.WebRootPath}{SD.PRODUCTIMG}";
 
             if (!Directory.Exists(folderDirectory))
@@ -36,14 +34,11 @@ namespace WebLucky_Serwer.Service
                 Directory.CreateDirectory(folderDirectory);
             }
 
-            //บันทึกไฟล์ลงดิสก์
             var filePath = Path.Combine(folderDirectory, fileName);
             await using FileStream fs = new FileStream(filePath, FileMode.Create);
             await file.OpenReadStream().CopyToAsync(fs);
 
-            //ชื่อไฟล์สำหรับบันทึกลง Database
-            var fullPath = $"{SD.PRODUCTIMG}/{fileName}";
-            return fullPath;
+            return fileName;
         }
     }
 

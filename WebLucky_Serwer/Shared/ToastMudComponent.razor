@@ -5,6 +5,8 @@
     [Parameter]
     public bool Open { get; set; }
     [Parameter]
+    public string? Alert { get; set; }
+    [Parameter]
     public string? Message { get; set; }
     [Parameter]
     public EventCallback Toggle { get; set; }
@@ -13,7 +15,7 @@
     {
         if (Open)
         {
-            OnClick(); 
+            OnClick();
             await Toggle.InvokeAsync();
         }
     }
@@ -21,10 +23,10 @@
     {
         var config = (SnackbarOptions options) =>
         {
-            options.VisibleStateDuration = 20000;
+            options.VisibleStateDuration = 1000;
             options.DuplicatesBehavior = SnackbarDuplicatesBehavior.Prevent;
         };
-        SnackbarService.Add(Message, (Message == "" ? Severity.Error : Severity.Success), configure: config, key: "mudblazor");
+        SnackbarService.Add(Message, (Alert == "Success" ? Severity.Success : Alert == "Warning" ? Severity.Warning : Severity.Error), configure: config, key: "mudblazor");
         SnackbarService.Add(@<span>This one has the same key</span>, configure: config, key: "mudblazor");
         SnackbarService.Add<MudChip>(new Dictionary<string, object>() {
             { "Text", "This one also has the same key" }

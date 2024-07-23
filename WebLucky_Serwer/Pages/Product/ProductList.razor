@@ -1,108 +1,121 @@
 ﻿@page "/product"
 @inject IFileUpload _fu
 @inject IProductRepository _pr
-@inject NavigationManager _navigationManager
+@inject NavigationManager _nm
+@attribute [Authorize(Roles = SD.Role_Admin)]
 
-<ToastMudComponent Open="@Open" Message="@Message" Toggle="@Toggle" />
-@if (Products.Any())
-{ 
-    <div class="row m-2">
-        <div class="col-6">
-            <h4 class="card-title text-primary">Product List</h4>
-        </div>
-        <div class="col-4 offset-2">
-            <a href="product/create" class="btn btn-primary form-control">Add New Product </a>
-        </div>
-        <div>
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Shop Favorites</th>
-                        <th>Customer Favorites</th>
-                        <th>Category</th>
-                        <th>ImageUrl</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Products)
-                    {
-                        <tr>
-                            <td>@item.Name</td>
-                            <th>
-                                <input type="checkbox" disabled checked="@item.ShopFavorites">
-                            </th>
-                            <th>
-                                <input type="checkbox" disabled checked="@item.CustomerFavorites">
-                            </th>
-                            <th>
-                                @item.Category.Name
-                            </th>
-                            <th>
-                                @if (!String.IsNullOrEmpty(item.ImageUrl)) { <img src="@item.ImageUrl" width="100px" /> }
-                            </th>
-                            <td>
-                                <NavLink href="@($"product/edit/{item.Id}")" class="btn-primary btn">Edit</NavLink>
-                                <NavLink href="@($"product/price/{item.Id}")" class="btn-success btn">Price</NavLink>
-                                <_DeleteConfirmation OnDeleteConfirm="@(()=>DeleteConfirm(item.Id))" />
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+<ToastMudComponent Open="@Open" Message="@Message" Alert="@Alert" Toggle="@(()=>{Open = false; Alert = ""; Message = "";})" />
+@if (IsLoading)
+{
+    <div class="container1">
+        <div class="spinner"></div>
     </div>
 }
 else
 {
-    if (IsLoading)
-    {
-        <div class="text-center offset-6">
-            <div class="spinner">
-                <div> </div>
-                <div> </div>
-                <div> </div>
-                <div> </div>
-                <div> </div>
-                <div> </div>
-                <div> </div>
-                <div> </div>
-                <div> </div>
-                <div> </div>
+    <MudContainer Class="mt-4">
+        <MudGrid>
+            <MudItem xs="12" md="11">
+                <MudText Typo="Typo.h4">
+                    Product
+                    <MudAvatar Variant="MudBlazor.Variant.Outlined">@Products.ToList().Count</MudAvatar>
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" md="1">
+                <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" Href="product/create" />
+            </MudItem>
+        </MudGrid>
+        @if (Products.Any())
+        {
+            <MudTable Items="@Products" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<ProductDTO,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1" Style="margin-top: 20px;">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Product</MudText>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Shop Favorites</MudTh>
+                    <MudTh>Customer Favorites</MudTh>
+                    <MudTh>Category</MudTh>
+                    <MudTh>ImageUrl</MudTh>
+                    <MudTh>Actions</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Name">@context.Name</MudTd>
+                    <MudTd DataLabel="Shop Favorites">
+                        <MudCheckBox Color="Color.Secondary" @bind-Value="@context.ShopFavorites" Disabled="true"></MudCheckBox>
+                    </MudTd>
+                    <MudTd DataLabel="Customer Favorites">
+                        <MudCheckBox Color="Color.Secondary" @bind-Value="@context.CustomerFavorites" Disabled="true"></MudCheckBox>
+                    </MudTd>
+                    <MudTd DataLabel="Category">@context.Category.Name</MudTd>
+                    <MudTd DataLabel="ImageUrl">
+                        @if (!String.IsNullOrEmpty(context.ImageUrl))
+                        {
+                            <MudImage Src="@($"{SD.PAGE_SERVER}{SD.PRODUCTIMG}/{context.ImageUrl}")" Width="100" Class="rounded-lg" />
+                        }
+                    </MudTd>
+                    <MudTd DataLabel="Product">
+                        <MudButtonGroup VerticalAlign="true">
+                            <MudButtonGroup Color="Color.Tertiary" Variant="MudBlazor.Variant.Filled" Size="Size.Large" VerticalAlign="true">
+                                <MudButton Href="@($"product/edit/{context.Id}")">Edit</MudButton>
+                            </MudButtonGroup>
+                            <MudButtonGroup Color="Color.Secondary" Variant="MudBlazor.Variant.Filled" Size="Size.Large" VerticalAlign="true">
+                                <MudButton Href="@($"product/price/{context.Id}")">Price</MudButton>
+                            </MudButtonGroup>
+                            <_DeleteConfirmation OnDeleteConfirm="@(()=>DeleteConfirm(context.Id))" />
+                        </MudButtonGroup>
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+            <div class="d-flex flex-wrap mt-4">
+                <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+                <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+                <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+                <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+                <MudSpacer />
+                <div style="min-width:200px;">
+                    <MudText Inline="true" Class="align-self-center">Selected1: @selectedItem1?.Name</MudText>
+                </div>
             </div>
-        </div>
-    }
-    else
-    {
-        <p>No records found.</p>
-    }
+        }
+    </MudContainer>
 }
 
 @code {
+    private bool hover = true;
+    private bool dense = false;
+    private bool striped = true;
+    private bool bordered = true;
+    private string searchString1 = "";
+    private ProductDTO selectedItem1 = null;
+    private HashSet<ProductDTO> selectedItems = new HashSet<ProductDTO>();
+    private bool FilterFunc1(ProductDTO element) => FilterFunc(element, searchString1);
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
     private IEnumerable<ProductDTO> Products { get; set; } = new List<ProductDTO>();
-
     public bool Open { get; set; }
-    public int deleteId { get; set; }
+    public string? Alert { get; set; }
     public string? Message { get; set; }
-    public bool IsLoading { get; set; } = true;
+    private bool IsLoading { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState;
         if (!authState.User.Identity.IsAuthenticated)
         {
-            var uri = new Uri(_navigationManager.Uri); //จดจำเส้นทางปัจจุบัน
-            _navigationManager.NavigateTo($"/identity/account/login?returnUrl={uri.LocalPath}", forceLoad: true);
+            var uri = new Uri(_nm.Uri);
+            _nm.NavigateTo($"/identity/account/login?returnUrl={uri.LocalPath}", forceLoad: true);
         }
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await Task.Delay(1000);
             await LoadProducts();
         }
     }
@@ -120,15 +133,25 @@ else
         {
             ProductDTO product = await _pr.Get(deleteId);
             Open = true;
+            Alert = "Success";
             Message = "ลบสำเร็จ";
             _fu.DeleteFile(product.ImageUrl);
             await _pr.Delete(deleteId);
             await LoadProducts();
         }
     }
-    public void Toggle()
+    private bool FilterFunc(ProductDTO element, string searchString)
     {
-        Open = false;
-        Message = "";
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Category.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.ImageUrl.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.ShopFavorites} {element.CustomerFavorites}".Contains(searchString))
+            return true;
+        return false;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
+using Tangy_Common;
 using WebLucky_Client.Service.IService;
 
 namespace WebLucky_Client.Service
@@ -18,7 +19,7 @@ namespace WebLucky_Client.Service
             {
                 var content = JsonConvert.SerializeObject(model);
                 var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("api/stripepayment/create", bodyContent);
+                var response = await _httpClient.PostAsync($"{SD.PAGE_API}/api/stripepayment/create", bodyContent);
                 string responseResult = response.Content.ReadAsStringAsync().Result;
                 if (response.IsSuccessStatusCode)
                 {

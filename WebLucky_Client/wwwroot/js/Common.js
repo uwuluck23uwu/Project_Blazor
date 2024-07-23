@@ -27,8 +27,10 @@ window.ShowSwal = (type, message) => {
 function ShowDeleteConfirmationModal() {
     $('#DeleteModal').modal('show');
 }
-
 function HideDeleteConfirmationModal() {
     $('#DeleteModal').modal('hide');
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    AOS.init();
+});

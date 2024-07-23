@@ -17,10 +17,12 @@ else
     <div class="mt-4 mx-4 px-md-5 mx-md-5 p-1">
         <div class="row p-2 my-3">
             <div class="col-12 col-lg-7 p-4">
-                <div class="row px-2 text-success ">
-                    <div class="col-8 py-1"><p style="font-size:x-large;margin:0px;">Order Summary</p></div>
-                    <div class="col-4 p-0" style="text-align:right">
-                        <a href="/cart" class="btn btn-secondary btn-block">Back to cart</a>
+                <div class="row px-2" style="color: #EC407A">
+                    <div class="col-8 py-1">
+                        <MudText Typo="Typo.h5">Order Summary</MudText>
+                    </div>
+                    <div class="col-4 p-0" style="text-align:right; margin-bottom: 20px">
+                        <MudButton Href="@($"{SD.PAGE_CLIENT}/cart")" Color="Color.Warning" Variant="Variant.Filled" Class="btn-block">Back to cart</MudButton>
                     </div>
                 </div>
                 @foreach (var prod in Order.OrderDetails)
@@ -33,21 +35,18 @@ else
                             <span class="">Product : @prod.ProductName </span><br />
                             <span class="pt-1">Size : @prod.Size</span><br />
                             <span class="pt-1">Count : @prod.Count</span><br />
-
                         </div>
                         <div class="col-4 col-md-5 " style="text-align:right;">
                             <h4 class="text-warning font-weight-bold pt-2">
                                 USD
-                                <span style="border-bottom:1px solid #ff6a00">
-                                    @((prod.Count * prod.Price).ToString("c"))
-                                </span>
+                                <span>@((prod.Count * prod.Price).ToString("c"))</span>
                             </h4>
                         </div>
                     </div>
                 }
-                <div class="row" style="text-align:right">
+                <div class="row" style="text-align:right; color: #EC407A; margin-top: 20px">
                     <div class="col-12 px-3">
-                        <h3> Order Total : <span class="text-secondary">@Order.OrderHeader.OrderTotal.ToString("c")</span> </h3>
+                        <h3> Order Total : <span class="text-secondary">$@Order.OrderHeader.OrderTotal.ToString()</span> </h3>
                     </div>
                 </div>
             </div>
@@ -56,7 +55,7 @@ else
                     <DataAnnotationsValidator />
                     <div class="row px-2 text-success border-bottom">
                         <div class="col-7 py-1">
-                            <p style="font-size:x-large;margin:0px;">Enter Details</p>
+                            <p style="font-size: x-large ;margin:0px; color: #EC407A;">Enter Details</p>
                         </div>
                     </div>
                     <div class="form-group pt-2">
@@ -81,7 +80,13 @@ else
                     </div>
                     <div class="form-group pt-2">
                         <label class="text-warning">City</label>
-                        <InputText @bind-Value="Order.OrderHeader.City" type="text" class="form-control" />
+                        <select @bind="Order.OrderHeader.City" class="form-control">
+                            <option value="" disabled selected>Select City*</option>
+                            @foreach (var province in Provinces)
+                            {
+                                <option value="@province">@province</option>
+                            }
+                        </select>
                         <ValidationMessage For="()=>Order.OrderHeader.City"></ValidationMessage>
                     </div>
                     <div class="form-group pt-2">
@@ -95,10 +100,9 @@ else
                         <ValidationMessage For="()=>Order.OrderHeader.PostalCode"></ValidationMessage>
                     </div>
                     <div class="form-group pt-2">
-                        <button type="submit" class="btn btn-success form-control">Checkout Now</button>
+                        <MudButton ButtonType="ButtonType.Submit" Color="Color.Secondary" Variant="Variant.Filled" Class="form-control" Style="margin-top: 10px">Checkout Now</MudButton>
                     </div>
                 </EditForm>
-
             </div>
         </div>
     </div>
@@ -108,6 +112,86 @@ else
     public bool IsProcessing { get; set; } = false;
     private OrderDTO Order { get; set; } = null;
     private IEnumerable<ProductDTO> Products { get; set; }
+    private List<string> Provinces = new List<string>
+    {
+        "กรุงเทพมหานคร",
+        "กระบี่",
+        "กาญจนบุรี",
+        "กาฬสินธุ์",
+        "กำแพงเพชร",
+        "ขอนแก่น",
+        "จันทบุรี",
+        "ฉะเชิงเทรา",
+        "ชลบุรี",
+        "ชัยนาท",
+        "ชัยภูมิ",
+        "ชุมพร",
+        "เชียงราย",
+        "เชียงใหม่",
+        "ตรัง",
+        "ตราด",
+        "ตาก",
+        "นครนายก",
+        "นครปฐม",
+        "นครพนม",
+        "นครราชสีมา",
+        "นครศรีธรรมราช",
+        "นครสวรรค์",
+        "นนทบุรี",
+        "นราธิวาส",
+        "น่าน",
+        "บึงกาฬ",
+        "บุรีรัมย์",
+        "ปทุมธานี",
+        "ประจวบคีรีขันธ์",
+        "ปราจีนบุรี",
+        "ปัตตานี",
+        "พระนครศรีอยุธยา",
+        "พังงา",
+        "พัทลุง",
+        "พิจิตร",
+        "พิษณุโลก",
+        "เพชรบุรี",
+        "เพชรบูรณ์",
+        "แพร่",
+        "พะเยา",
+        "ภูเก็ต",
+        "มหาสารคาม",
+        "มุกดาหาร",
+        "แม่ฮ่องสอน",
+        "ยโสธร",
+        "ยะลา",
+        "ร้อยเอ็ด",
+        "ระนอง",
+        "ระยอง",
+        "ราชบุรี",
+        "ลพบุรี",
+        "ลำปาง",
+        "ลำพูน",
+        "เลย",
+        "ศรีสะเกษ",
+        "สกลนคร",
+        "สงขลา",
+        "สตูล",
+        "สมุทรปราการ",
+        "สมุทรสงคราม",
+        "สมุทรสาคร",
+        "สระแก้ว",
+        "สระบุรี",
+        "สิงห์บุรี",
+        "สุโขทัย",
+        "สุพรรณบุรี",
+        "สุราษฎร์ธานี",
+        "สุรินทร์",
+        "หนองคาย",
+        "หนองบัวลำภู",
+        "อ่างทอง",
+        "อำนาจเจริญ",
+        "อุดรธานี",
+        "อุตรดิตถ์",
+        "อุทัยธานี",
+        "อุบลราชธานี"
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -128,14 +212,14 @@ else
             ProductDTO product = Products.FirstOrDefault(u => u.Id == item.ProductId);
             ProductPriceDTO productPrice = product.ProductPrices.FirstOrDefault(u => u.Id == item.ProductPriceId);
             OrderDetailDTO orderDetailDTO = new()
-            {
-                ProductId = item.ProductId,
-                Size = productPrice.Size,
-                Count = item.Count,
-                Price = productPrice.Price,
-                ProductName = product.Name,
-                Product = product
-            };
+                {
+                    ProductId = item.ProductId,
+                    Size = productPrice.Size,
+                    Count = item.Count,
+                    Price = productPrice.Price,
+                    ProductName = product.Name,
+                    Product = product
+                };
             Order.OrderDetails.Add(orderDetailDTO);
             Order.OrderHeader.OrderTotal += (orderDetailDTO.Count * orderDetailDTO.Price);
         }

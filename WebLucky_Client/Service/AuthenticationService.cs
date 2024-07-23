@@ -24,7 +24,7 @@ namespace WebLucky_Client.Service
         {
             var content = JsonConvert.SerializeObject(signInRequest);
             var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("api/account/signin", bodyContent);
+            var response = await _client.PostAsync($"{SD.PAGE_API}/api/account/signin", bodyContent);
             var contentTemp = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<SignInResponseDTO>(contentTemp);
             if (response.IsSuccessStatusCode)
@@ -51,7 +51,7 @@ namespace WebLucky_Client.Service
         {
             var content = JsonConvert.SerializeObject(signUpRequest);
             var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("api/account/signup", bodyContent);
+            var response = await _client.PostAsync($"{SD.PAGE_API}/api/account/signup", bodyContent);
             var contentTemp = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<SignUpResponseDTO>(contentTemp);
             if (response.IsSuccessStatusCode)

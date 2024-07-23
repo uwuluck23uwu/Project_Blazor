@@ -2,7 +2,11 @@
 {
     public static class SD
     {
-        public const string PRODUCTIMG = "\\images\\product";
+        public const string PRODUCTIMG = "/images/product";
+        public const string PAGE_SERVER = "/cs66/blazor/s08/BlazorServer";
+        public const string PAGE_CLIENT = "/cs66/blazor/s08/BlazorClient";
+        public const string PAGE_API = "/cs66/blazor/s08/BlazorAPI";
+        public const string COMMENT_API = "/api/comment";
         public const string PRODUT_API = "/api/product";
         public const string ORDER_API = "/api/order";
         public const string ShoppingCart = "ShoppingCart";

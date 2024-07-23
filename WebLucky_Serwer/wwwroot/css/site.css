@@ -151,3 +151,19 @@ a, .btn-link {
         transform: rotate(calc(var(--rotation) * 1deg)) translate(0, calc(var(--translation) * 1.5%));
     }
 }
+
+.graph_muditem {
+    background-color: #616161;
+    color: aliceblue;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    border-radius: 10px 10px 0px 0px;
+}
+.hover_color :hover .hover_color_icon {
+    color: #000000;
+    transition: color 0.3s;
+}
+.category_product :hover .category_product_image {
+    transform: scale(1.04);
+    transition: transform 0.3s;
+}

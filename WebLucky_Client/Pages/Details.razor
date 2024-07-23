@@ -1,8 +1,10 @@
 ﻿@page "/details/{ProductId:int}"
-@inject IProductService _productService
-@inject ICartService _cartService
-@inject NavigationManager _navigationManager
-@inject IJSRuntime _jsRuntime
+@inject IProductService _ps
+@inject ICommentService _coms
+@inject ICartService _cs
+@inject IJSRuntime _js
+@inject NavigationManager _nm
+@inject AuthenticationStateProvider _asp
 
 @if (IsProcessing)
 {
@@ -12,102 +14,247 @@
 }
 else
 {
-    <EditForm OnValidSubmit="AddToCart" Model="DetailsVM" method="post">
-        <DataAnnotationsValidator />
-        <div class="card container mt-4">
-            <div class="card-header ml-0  row">
-                <div class="col-12 col-md-6">
-                    <h1 class="text-primary">@Product.Name</h1>
-                </div>
-                <div class="col-12 col-md-6 text-end pt-4">
-                    <span class="badge bg-info pt-2" style="height:30px;">@Product.Category.Name</span>
-                    <span class="badge bg-warning pt-2" style="height:30px;">@Product.Color</span>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="container rounded p-2">
-                    <div class="row">
-                        <div class="col-10">
-                            <p>@((MarkupString)Product.Description)</p>
-                            <div class="row">
+    <MudContainer Fixed="true" Class="mt-4" Style="border: 1px solid; border-radius: 10px; padding: 16px;">
+        <EditForm OnValidSubmit="AddToCart" Model="DetailsVM" method="post">
+            <DataAnnotationsValidator />
+            <MudCard Outlined="true">
+                <MudCardHeader>
+                    <MudGrid>
+                        <MudItem xs="6" md="1">
+                            <MudIconButton Href="@($"{SD.PAGE_CLIENT}/")" Color="Color.Warning" Variant="Variant.Filled" Icon="@Icons.Material.Filled.ArrowBackIos" Class="w-100 pt-4 pb-4" />
+                        </MudItem>
+                        <MudItem xs="6" md="5">
+                            <MudText Typo="Typo.h4" Class="mt-2 ml-2">@Product.Name</MudText>
+                        </MudItem>
+                        <MudItem xs="12" md="6" Class="text-end">
+                            <MudPaper Style="width: 100px; height: 40px; background-color: #EC407A; color: white; display: inline-block; text-align: center;" Class="me-2">
+                                <MudText Typo="Typo.h6">@Product.Category.Name</MudText>
+                            </MudPaper>
+                            <MudPaper Style="width: 100px; height: 40px; background-color: #EC407A; color: white; display: inline-block; text-align: center;">
+                                <MudText Typo="Typo.h6">@Product.Color</MudText>
+                            </MudPaper>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid>
+                        <MudItem xs="8">
+                            <MudImage Src="@Product.ImageUrl" Width="700" Class="rounded" />
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudText Typo="Typo.h4">Please Choose SIZE</MudText>
+                            <MudGrid Class="mt-2">
                                 @foreach (var productPrice in Product.ProductPrices)
                                 {
-                                    @* if (productPrice.Id == DetailsVM.SelectedProductPriceId)
-                                    {
-                                        <div class="col-2 bg-light text-center pt-2 m-2" style="border:3px solid #28A745; border-radius:10px;box-shadow:5px">
-                                            <p>@productPrice.Size</p>
-                                            <p>@productPrice.Price.ToString("c")</p>
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div class="col-2 bg-light text-center pt-2 m-2" style="border:1px solid; border-radius:10px;box-shadow:5px"
-                                             @onclick="(args)=>SelectedProductPrice(args,productPrice.Id)">
-                                            <p>@productPrice.Size</p>
-                                            <p>@productPrice.Price.ToString("c")</p>
-                                        </div>
-                                    } *@
-                                    <div class="col-2 bg-light text-center pt-2 m-2" style="border:@(productPrice.Id == DetailsVM.SelectedProductPriceId ? "3px solid #28A745" : "1px solid"); border-radius:10px;box-shadow:5px;" @onclick="(args)=>SelectedProductPrice(args,productPrice.Id)">
+                                    <div data-aos="fade-left" class="col-2 bg-light text-center pt-2 m-2" style="border:@(productPrice.Id == DetailsVM.SelectedProductPriceId ? "3px solid #EC407A" : "1px solid"); border-radius:10px;box-shadow:5px;" @onclick="(args)=>SelectedProductPrice(args,productPrice.Id)">
                                         <p>@productPrice.Size</p>
-                                        <p>@productPrice.Price.ToString("c")</p>
+                                        <p>$@productPrice.Price.ToString()</p>
                                     </div>
                                 }
                                 @if (!Product.ProductPrices.Any())
                                 {
-                                    <p class="text-warning">No Size available yet...</p>
+                                    <MudText Color="Color.Warning">No Size available yet...</MudText>
                                 }
                                 else
                                 {
-                                    <div class="row pl-2">
-                                        <div class="col-2 text-primary"><h4>Count</h4></div>
-                                        <div class="col-10">
-                                            <InputNumber @bind-Value="DetailsVM.Count" class="form-control" />
-                                            <ValidationMessage For="()=>DetailsVM.Count"></ValidationMessage>
-                                        </div>
-                                    </div>
+                                    <MudGrid Class="mt-2">
+                                        <MudItem xs="2" Class="mt-5 ml-6">
+                                            <MudText Typo="Typo.h5">Count</MudText>
+                                        </MudItem>
+                                        <MudItem xs="9">
+                                            <MudNumericField @bind-Value="DetailsVM.Count" Min="0" />
+                                            <ValidationMessage For="() => DetailsVM.Count" />
+                                        </MudItem>
+                                        <MudItem xs="11">
+                                            <MudPaper Class="pa-4" Outlined="true" Square="true">
+                                                <MudText>Description : @Product.Description</MudText>
+                                            </MudPaper>
+                                        </MudItem>
+                                        <MudItem xs="12">
+                                            <MudButton ButtonType="ButtonType.Submit" Color="Color.Secondary" Variant="Variant.Filled" Class="w-100" Disabled="@(!(DetailsVM.SelectedProductPriceId != 0))">Add to Cart</MudButton>
+                                        </MudItem>
+                                    </MudGrid>
                                 }
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <img src="@Product.ImageUrl" width="100%" class="rounded" />
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
+                            </MudGrid>
+                        </MudItem>
+                        <MudItem xs="4" Class="d-flex flex-column mt-4 mb-4 ml-2">
+                            <MudText Typo="Typo.h4" Class="ml-4">Ratings & Reviews :</MudText>
+                        </MudItem>
+                        <MudItem xs="3" Class="d-flex flex-column align-center mt-4 mb-4">
+                            <MudRating Style="margin-left: 5%" @bind-SelectedValue="selectedVal" HoveredValueChanged="HandleHoveredValueChanged" FullIcon="@Icons.Material.Filled.Favorite" EmptyIcon="@Icons.Material.Filled.FavoriteBorder" Color="Color.Secondary" Size="Size.Large" />
+                            <MudText Color="Color.Secondary" Typo="Typo.subtitle2" Class="deep-purple-text mt-2 ml-2">@LabelText</MudText>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+        </EditForm>
+        <MudItem xs="12" Class="mt-4">
+            <EditForm Model="@Comment" OnValidSubmit="@(() => UpsertComment("Create", 0))">
+                <MudPaper Class="pa-4" Outlined="true" Square="true">
                     <div class="row">
-                        <div class="col-12 col-md-6 pb-1">
-                            <a class="btn btn-success form-control " href="/">Back to Home</a>
+                        <div class="col-1">
+                            <img src="images/Cat0.png" style="width: 100%" />
                         </div>
-                        <div class="col-12 col-md-6 pb-1">
-                            @if (DetailsVM.SelectedProductPriceId > 0)
-                            {
-                                <button type="submit" value="Add to Cart" class="btn btn-primary form-control">Add to Cart</button>
-                            }
-                            else
-                            {
-                                <button type="submit" value="Add to Cart" disabled class="btn btn-primary form-control">Add to Cart</button>
-                            }
+                        <div class="col-10">
+                            <MudTextField Label="ความคิดเห็น" Variant="Variant.Outlined" @bind-Value="Comment.Name" />
+                        </div>
+                        <div class="col-1">
+                            <MudButton Color="Color.Secondary" Variant="MudBlazor.Variant.Filled" Size="Size.Large" Class="ml-auto" ButtonType="MudBlazor.ButtonType.Submit" Style="width: 100%; height: 100%">
+                                <MudIcon Icon="@Icons.Material.Filled.KeyboardArrowRight" />
+                            </MudButton>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </EditForm>
+                </MudPaper>
+            </EditForm>
+            <MudPaper Class="pa-4" Outlined="true" Square="true">
+                @if (CommentList != null)
+                {
+                    @foreach (var comment in CommentList)
+                    {
+                        <EditForm Model="@Comment" OnValidSubmit="@(editingCommentId == comment.Id ? () => UpsertComment("Update", comment.Id) : () => StartEditing(comment))">
+                            <MudPaper Class="pa-4" Outlined="true" Square="true">
+                                <div class="row">
+                                    <div class="col-12 ml-2 mb-3">
+                                        <MudText>@comment.UserEmail</MudText>
+                                    </div>
+                                    <div class="col-1">
+                                        <img src="images/Cat0.png" class="ml-3" style="width: 60px; height: 60px;" />
+                                    </div>
+                                    @if (comment.UserEmail == AuthState.User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value)
+                                    {
+                                        <div class="col-10">
+                                            @if (editingCommentId == comment.Id)
+                                            {
+                                                <MudTextField @bind-Value="editingCommentName" Label="ความคิดเห็น" Variant="Variant.Outlined" />
+                                                <MudButton OnClick="CancelEdit">Cancel</MudButton>
+                                            }
+                                            else
+                                            {
+                                                <MudPaper Class="pa-4" Outlined="true" Square="true">
+                                                    <MudText>@comment.Name</MudText>
+                                                </MudPaper>
+                                            }
+                                        </div>
+                                        <div class="col-1">
+                                            <MudButtonGroup Color="Color.Dark" Variant="Variant.Text" VerticalAlign="true">
+                                                <MudButton ButtonType="MudBlazor.ButtonType.Submit">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Edit" />
+                                                </MudButton>
+                                                <MudButton OnClick="@(() => OnButtonClicked(comment.Id))">
+                                                    <MudIcon Icon="@Icons.Material.Filled.DeleteSweep" />
+                                                </MudButton>
+                                            </MudButtonGroup>
+                                            <MudMessageBox @ref="mbox" Title="Warning" CancelText="Cancel">
+                                                <MessageContent>
+                                                    Deleting can not be undone!
+                                                </MessageContent>
+                                                <YesButton>
+                                                    <MudButton Color="Color.Warning" Variant="MudBlazor.Variant.Filled" StartIcon="@Icons.Material.Filled.DeleteForever">Delete!</MudButton>
+                                                </YesButton>
+                                            </MudMessageBox>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-11">
+                                            <MudPaper Class="pa-4" Outlined="true" Square="true">
+                                                <MudText>@comment.Name</MudText>
+                                            </MudPaper>
+                                        </div>
+                                    }
+                                </div>
+                                <MudItem xs="12">
+                                    <MudText Class="mt-2">
+                                        <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.AccessTimeFilled" Color="Color.Dark" />
+                                        @comment.CreatedDate
+                                    </MudText>
+                                </MudItem>
+                            </MudPaper>
+                        </EditForm>
+                    }
+                }
+                else
+                {
+                    <MudItem>
+                        <MudText>ไม่มีความคิดเห็นในขณะนี้</MudText>
+                    </MudItem>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudContainer>
 }
 
 @code {
     [Parameter]
     public int ProductId { get; set; }
-
+    public bool IsProcessing { get; set; } = false;
     public ProductDTO Product { get; set; } = new();
     public DetailsVM DetailsVM { get; set; } = new();
-    public bool IsProcessing { get; set; } = false;
+    public CommentDTO Comment { get; set; } = new();
+    public AuthenticationState AuthState { get; set; }
+    public IEnumerable<CommentDTO> CommentList { get; set; } = new List<CommentDTO>();
+    private int selectedVal = 4;
+    private int? activeVal;
+    private MudMessageBox mbox { get; set; }
+    private int? editingCommentId = null;
+    private string editingCommentName = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadProducts();
+    }
+    private async Task LoadProducts()
+    {
         IsProcessing = true;
-        Product = await _productService.Get(ProductId);
+        Product = await _ps.Get(ProductId);
+        CommentList = await _coms.GetAll(ProductId);
+        AuthState = await _asp.GetAuthenticationStateAsync();
         IsProcessing = false;
+        StateHasChanged();
+    }
+    private void StartEditing(CommentDTO comment)
+    {
+        editingCommentId = comment.Id;
+        editingCommentName = comment.Name;
+    }
+    private void CancelEdit()
+    {
+        editingCommentId = null;
+        editingCommentName = string.Empty;
+    }
+    private async Task UpsertComment(string title, int commentId)
+    {
+        var comment = CommentList.FirstOrDefault(c => c.Id == commentId);
+        if (title == "Create")
+        {
+            Comment.ProductId = ProductId;
+            Comment.CreatedDate = DateTime.Now;
+            Comment.UserEmail = AuthState.User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
+            var commment = await _coms.Create(Comment);
+            if (commment == null) { await _js.ToastrError("Please log in before commenting."); }
+            else { Comment.Name = string.Empty; }
+        }
+        if (comment != null)
+        {
+            if (title == "Update")
+            {
+                comment.Name = editingCommentName;
+                var commments = await _coms.Update(comment);
+                editingCommentId = null;
+                editingCommentName = string.Empty;
+                if (commments == null) { await _js.ToastrError("Please log in before commenting."); }
+            }
+        }
+        await LoadProducts();
+    }
+    private async void OnButtonClicked(int commentId)
+    {
+        bool? result = await mbox.Show();
+        if (result != null && result.Value)
+        {
+            await _coms.Delete(commentId);
+            await LoadProducts();
+        }
     }
     private async void SelectedProductPrice(MouseEventArgs e, int productPriceId)
     {
@@ -122,8 +269,19 @@ else
             ProductId = ProductId,
             ProductPriceId = DetailsVM.SelectedProductPriceId
         };
-        await _cartService.IncrementCart(shoppingCart);
-        _navigationManager.NavigateTo("/");
-        await _jsRuntime.ToastrSuccess("Product added to cart successfully");
+        await _cs.IncrementCart(shoppingCart);
+        _nm.NavigateTo($"{SD.PAGE_CLIENT}/details/{ProductId}");
+        await _js.ToastrSuccess("Product added to cart successfully");
     }
+    private void HandleHoveredValueChanged(int? val) => activeVal = val;
+    private string LabelText => (activeVal ?? selectedVal)
+    switch
+    {
+        1 => "Very bad",
+        2 => "Bad",
+        3 => "Sufficient",
+        4 => "Good",
+        5 => "Awesome!",
+        _ => "Rate our product!"
+    };
 }

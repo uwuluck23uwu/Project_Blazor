@@ -21,7 +21,7 @@ namespace WebLucky_Client.Service
         {
             var content = JsonConvert.SerializeObject(paymentDTO);
             var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("api/order/create", bodyContent);
+            var response = await _httpClient.PostAsync($"{SD.PAGE_API}{SD.ORDER_API}/create", bodyContent);
             string responseResult = response.Content.ReadAsStringAsync().Result;
             if (response.IsSuccessStatusCode)
             {
@@ -32,7 +32,7 @@ namespace WebLucky_Client.Service
         }
         public async Task<OrderDTO> Get(int orderHeaderId)
         {
-            var response = await _httpClient.GetAsync($"{SD.ORDER_API}/{orderHeaderId}");
+            var response = await _httpClient.GetAsync($"{SD.PAGE_API}{SD.ORDER_API}/{orderHeaderId}");
             var content = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
@@ -60,7 +60,7 @@ namespace WebLucky_Client.Service
         {
             var content = JsonConvert.SerializeObject(orderHeader);
             var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("api/order/paymentsuccessful", bodyContent);
+            var response = await _httpClient.PostAsync($"{SD.PAGE_API}{SD.ORDER_API}/paymentsuccessful", bodyContent);
             string responseResult = response.Content.ReadAsStringAsync().Result;
             if (response.IsSuccessStatusCode)
             {

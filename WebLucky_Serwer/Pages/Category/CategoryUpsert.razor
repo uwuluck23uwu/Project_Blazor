@@ -2,25 +2,40 @@
 @page "/category/edit/{Id:int}"
 @inject ICategoryRepository _cr
 @inject NavigationManager _nm
-@attribute [Authorize]
+@attribute [Authorize(Roles = SD.Role_Admin)]
 
-<EditForm Model="Category" OnValidSubmit="UpsertCategory">
-    <DataAnnotationsValidator />
-    <div class="mb-3">
-        <label class="form-label">Name</label>
-        <InputText class="form-control" @bind-Value="Category.Name" />
-        <ValidationMessage For="() => Category.Name"/>
-    </div>
-    <button type="submit" class="btn @(Title == "Create" ? "btn-primary" : "btn-danger")">@Title</button>
-    <NavLink href="category" class="btn btn-secondary">Back to Category</NavLink>
-</EditForm>
+<ToastMudComponent Open="@Open" Message="@Message" Alert="@Alert" Toggle="@(()=>{Open = false; Alert = ""; Message = "";})" />
+<MudContainer Fixed="true">
+    <MudText Typo="Typo.h4" Style="margin-top: 20px; margin-left: 4%;">
+        Category | @(Title == "Create" ? "Create" : "Update")
+    </MudText>
+    <EditForm Model="@Category" OnValidSubmit="UpsertCategory">
+        <DataAnnotationsValidator />
+        <MudGrid Style="margin-top: 2%;">
+            <MudItem xs="12" sm="11" Style="margin-left: 4%;">
+                <MudCard Class="pa-4">
+                    <MudCardContent>
+                        <MudTextField Label="Name" Required="true" RequiredError="โปรดป้อนข้อมูล!" @bind-Value="Category.Name" />
+                        <ValidationMessage For="()=>Category.Name"></ValidationMessage>
+                        <MudCardActions Class="d-flex align-center justify-space-between" Style="margin-top: 20px;">
+                            <MudButton Color="@(Title == "Create" ? Color.Secondary : Color.Tertiary)" Variant="MudBlazor.Variant.Filled" Size="Size.Large" Class="ml-auto" ButtonType="MudBlazor.ButtonType.Submit">@(Title == "Create" ? "Create" : "Update")</MudButton>
+                            <MudButton Color="Color.Warning" Variant="MudBlazor.Variant.Filled" Size="Size.Large" Href="category" Style="margin-left: 10px;">Back</MudButton>
+                        </MudCardActions>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+</MudContainer>
 
 @code {
     [Parameter]
     public int Id { get; set; }
     private int Count;
+    public bool Open { get; set; }
+    public string? Alert { get; set; }
+    public string? Message { get; set; }
     private string Title { get; set; } = "Create";
-
     private CategoryDTO Category { get; set; } = new CategoryDTO();
 
     protected override async Task OnInitializedAsync()
@@ -33,8 +48,23 @@
     }
     private async Task UpsertCategory()
     {
-        if (Id == 0) { await _cr.Create(Category); }
-        else { await _cr.Update(Category); }
+        if (Id == 0)
+        {
+            Open = true;
+            Alert = "Success";
+            Message = "สร้างหมวดหมู่เรียบร้อยแล้ว";
+            await _cr.Create(Category);
+        }
+        else
+        {
+            Open = true;
+            Alert = "Success";
+            Message = "อัปเดตหมวดหมู่สำเร็จแล้ว";
+            await _cr.Update(Category);
+        }
+        Open = true;
+        Alert = "Error";
+        Message = "ผิดพลาด";
         _nm.NavigateTo("category");
     }
 }

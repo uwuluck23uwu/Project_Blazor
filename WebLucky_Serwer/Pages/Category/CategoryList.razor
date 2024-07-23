@@ -1,76 +1,87 @@
 ﻿@page "/category"
 @inject ICategoryRepository _cr
-@* @inject IJSRuntime _js *@
-@attribute [Authorize]
+@attribute [Authorize(Roles = SD.Role_Admin)]
 
-@* <_DeleteConfirmation OnDeleteConfirm="@DeleteConfirm" /> *@
-<div class="row mt-4">
-    <div class="col-6">
-        <h4 class="card-title text-primary">Category List [@Categories.ToList().Count]</h4>
+<ToastMudComponent Open="@Open" Message="@Message" Alert="@Alert" Toggle="@(()=>{Open = false; Alert = ""; Message = "";})" />
+@if (IsLoading)
+{
+    <div class="container1">
+        <div class="spinner"></div>
     </div>
-    <div class="col-4 offset-2">
-        <a href="category/create" class="btn btn-primary form-control">Add New Category </a>
-    </div>
-    @if (Categories.Any())
-    {
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Categories)
-                {
-                    <tr>
-                        <td>@item.Name</td>
-                        <td>
-                            <NavLink href=@($"/category/edit/{item.Id}") class="btn-primary btn">Edit</NavLink>
-                            <_DeleteConfirmation OnDeleteConfirm="@(()=>DeleteConfirm(item.Id))" />
-                            @* <button @onclick="()=>ShowConfirm(item.Id)" class="btn-success btn">Delete</button> *@
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        if (IsLoading)
+}
+else
+{
+    <MudContainer Class="mt-4">
+        <MudGrid>
+            <MudItem xs="12" md="11">
+                <MudText Typo="Typo.h4">
+                    Category
+                    <MudAvatar Variant="MudBlazor.Variant.Outlined">@Categories.ToList().Count</MudAvatar>
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" md="1">
+                <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" Href="/cs66/blazor/s08/BlazorServer/category/create" />
+            </MudItem>
+        </MudGrid>
+        @if (Categories.Any())
         {
-            <div class="text-center offset-6">
-                <div class="spinner">
-                    <div> </div>
-                    <div> </div>
-                    <div> </div>
-                    <div> </div>
-                    <div> </div>
-                    <div> </div>
-                    <div> </div>
-                    <div> </div>
-                    <div> </div>
-                    <div> </div>
+            <MudTable Items="@Categories" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<CategoryDTO,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1" Style="margin-top: 20px;">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Category</MudText>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>ID</MudTh>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Actions</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="ID">@context.Id</MudTd>
+                    <MudTd DataLabel="Name">@context.Name</MudTd>
+                    <MudTd DataLabel="Actions">
+                        <MudButton Color="Color.Tertiary" Variant="MudBlazor.Variant.Filled" Size="Size.Large" Href="@($"/cs66/blazor/s08/BlazorServer/category/edit/{context.Id}")">Edit</MudButton>
+                        <_DeleteConfirmation OnDeleteConfirm="@(()=>DeleteConfirm(context.Id))" />
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+            <div class="d-flex flex-wrap mt-4">
+                <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+                <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+                <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+                <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+                <MudSpacer />
+                <div style="min-width:200px;">
+                    <MudText Inline="true" Class="align-self-center">Selected1: @selectedItem1?.Name</MudText>
                 </div>
             </div>
         }
-        else
-        {
-            <p>No records found.</p>
-        }
-    }
-</div>
+    </MudContainer>
+}
 
 @code {
-    private IEnumerable<CategoryDTO> Categories { get; set; } = new List<CategoryDTO>();
-    public bool IsLoading { get; set; } = true;
     public int deleteId { get; set; }
+    private bool hover = true;
+    private bool dense = false;
+    private bool striped = true;
+    private bool bordered = true;
+    private string searchString1 = "";
+    private CategoryDTO selectedItem1 = null;
+    private HashSet<CategoryDTO> selectedItems = new HashSet<CategoryDTO>();
+    private IEnumerable<CategoryDTO> Categories { get; set; } = new List<CategoryDTO>();
+    private bool FilterFunc1(CategoryDTO element) => FilterFunc(element, searchString1);
+    public bool Open { get; set; }
+    public string? Alert { get; set; }
+    public string? Message { get; set; }
+    private bool IsLoading { get; set; } = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await Task.Delay(1000);
             await LoadCategories();
         }
     }
@@ -82,18 +93,32 @@
         IsLoading = false;
         StateHasChanged();
     }
-    // private async Task ShowConfirm(int id)
-    // {
-    //     deleteId = id;
-    //     await _js.InvokeVoidAsync("ShowDeleteConfirmationModal");
-    // }
     public async Task DeleteConfirm(int deleteId)
     {
         if (deleteId != 0)
         {
-            await _cr.Delete(deleteId);
+            var obj = await _cr.Delete(deleteId);
+            if (obj == 0)
+            {
+                Open = true;
+                Alert = "Warning";
+                Message = "ไม่สามารถลบ เนื่องจากมีผลิตภัณฑ์ใช่งานอยู่";
+                return;
+            }
+            Open = true;
+            Alert = "Success";
+            Message = "ลบสำเร็จ";
             await LoadCategories();
         }
-        //await _js.InvokeVoidAsync("HideDeleteConfirmationModal");
+    }
+    private bool FilterFunc(CategoryDTO element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.Id}".Contains(searchString))
+            return true;
+        return false;
     }
 }

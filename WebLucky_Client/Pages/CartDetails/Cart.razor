@@ -1,7 +1,7 @@
 ﻿@page "/cart"
-@inject ILocalStorageService _localStorage
-@inject IProductService _productService
-@inject ICartService _cartService
+@inject ILocalStorageService _ls
+@inject IProductService _ps
+@inject ICartService _cs
 
 @if (IsProcessing)
 {
@@ -13,8 +13,24 @@ else
 {
     @if (!ShoppingCart.Any())
     {
-        <div>
-            Please add items to shopping cart.
+        <div class="container mt-4">
+            <div class="card">
+                <div class="card-header bg-dark text-light ml-0 ">
+                    <div class="row">
+                        <div class="col-6  pt-2">
+                            Shopping Cart
+                        </div>
+                        <div class="col-6 col-md-3 offset-md-3 text-end">
+                            <a href="@($"{SD.PAGE_CLIENT}/")" class="btn btn-outline-light form-control">Continue Shopping</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        Please add items to shopping cart.
+                    </div>
+                </div>
+            </div>
         </div>
     }
     else
@@ -27,7 +43,7 @@ else
                             Shopping Cart
                         </div>
                         <div class="col-6 col-md-3 offset-md-3 text-end">
-                            <a href="/" class="btn btn-outline-info form-control">Continue Shopping</a>
+                            <a href="@($"{SD.PAGE_CLIENT}/")" class="btn btn-outline-light form-control">Continue Shopping</a>
                         </div>
                     </div>
                 </div>
@@ -40,25 +56,25 @@ else
                             </div>
                             <div class="col-9 text-sm-center text-md-start col-md-4 pt-lg-1 ">
                                 <h4><strong>@item.Product.Name</strong></h4>
-                                <div class="badge bg-primary text-center" style="font-size:12px;">
+                                <div class="badge text-center" style="font-size:12px; background-color: #EC407A; color: white;">
                                     @item.Product.Category.Name
                                 </div>
-                                <div class="badge bg-info text-center" style="font-size:12px;">
+                                <div class="badge text-center" style="font-size:12px; background-color: #EC407A; color: white;">
                                     @item.Product.Color
                                 </div>
                                 <div><p>Size : @item.ProductPrice.Size</p></div>
                             </div>
                             <div class="col-12 text-sm-center col-md-7 text-md-start row  pt-lg-3 mt-3">
                                 <div class="col-4 pt-1 ">
-                                    <h6><strong>@item.ProductPrice.Price.ToString("c") <span class="text-muted">x</span> @item.Count </strong></h6>
+                                    <h6><strong>$@item.ProductPrice.Price.ToString() <span class="text-muted">x</span> @item.Count </strong></h6>
                                 </div>
                                 <div class="col-6 col-sm-4 col-lg-6">
-                                    <button @onclick="()=>Increment(item.ProductId,item.ProductPriceId,1)" class="btn btn-primary">
+                                    <MudButton @onclick="()=>Increment(item.ProductId,item.ProductPriceId,1)" Color="Color.Warning" Variant="Variant.Filled">
                                         <i class="bi bi-plus-square"></i>
-                                    </button>
-                                    <button @onclick="()=>Decrement(item.ProductId,item.ProductPriceId,1)" class="btn btn-warning">
+                                    </MudButton>
+                                    <MudButton @onclick="()=>Decrement(item.ProductId,item.ProductPriceId,1)" Color="Color.Secondary" Variant="Variant.Filled">
                                         <i class="bi bi-dash-square"></i>
-                                    </button>
+                                    </MudButton>
                                 </div>
                                 <div class="col-2 col-sm-4 col-lg-2 text-right">
                                     <button @onclick="()=>Decrement(item.ProductId,item.ProductPriceId,0)" class="btn btn-outline-danger">
@@ -84,7 +100,7 @@ else
                 </div>
                 <div class="card-footer">
                     <div class="col-12  col-md-3 offset-md-9">
-                        <a href="/summary" class="btn btn-secondary form-control">Summary</a>
+                        <MudButton Color="Color.Secondary" Variant="Variant.Filled" Href="@($"{SD.PAGE_CLIENT}/summary")" Class="form-control">Summary</MudButton>
                     </div>
                 </div>
 
@@ -102,42 +118,49 @@ else
     protected override async Task OnInitializedAsync()
     {
         IsProcessing = true;
-        Products = await _productService.GetAll();
+        Products = await _ps.GetAll();
         await LoadCart();
         IsProcessing = false;
     }
     private async Task LoadCart()
     {
         OrderTotal = 0;
-        ShoppingCart = await _localStorage.GetItemAsync<List<ShoppingCart>>(SD.ShoppingCart);
-        foreach (var cart in ShoppingCart)
+        ShoppingCart = await _ls.GetItemAsync<List<ShoppingCart>>(SD.ShoppingCart);
+        if (ShoppingCart != null)
         {
-            cart.Product = Products.FirstOrDefault(u => u.Id == cart.ProductId);
-            cart.ProductPrice = cart.Product.ProductPrices.FirstOrDefault(u => u.Id == cart.ProductPriceId);
-            OrderTotal += (cart.ProductPrice.Price * cart.Count);
+            foreach (var cart in ShoppingCart)
+            {
+                cart.Product = Products.FirstOrDefault(u => u.Id == cart.ProductId);
+                cart.ProductPrice = cart.Product.ProductPrices.FirstOrDefault(u => u.Id == cart.ProductPriceId);
+                OrderTotal += (cart.ProductPrice.Price * cart.Count);
+            }
+        }
+        else
+        {
+            ShoppingCart = new();
         }
     }
     private async Task Increment(int ProductId, int ProductPriceId, int Count)
     {
         IsProcessing = true;
-        await _cartService.IncrementCart(new()
-        {
-            Count = Count,
-            ProductId = ProductId,
-            ProductPriceId = ProductPriceId
-        });
+        await _cs.IncrementCart(new()
+            {
+                Count = Count,
+                ProductId = ProductId,
+                ProductPriceId = ProductPriceId
+            });
         await LoadCart();
         IsProcessing = false;
     }
     private async Task Decrement(int ProductId, int ProductPriceId, int Count)
     {
         IsProcessing = true;
-        await _cartService.DecrementCart(new()
-        {
-            Count = Count,
-            ProductId = ProductId,
-            ProductPriceId = ProductPriceId
-        });
+        await _cs.DecrementCart(new()
+            {
+                Count = Count,
+                ProductId = ProductId,
+                ProductPriceId = ProductPriceId
+            });
         await LoadCart();
         IsProcessing = false;
     }

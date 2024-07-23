@@ -9,23 +9,21 @@ using Tangy_Business.Repository.IRepository;
 using Syncfusion.Blazor;
 using Microsoft.AspNetCore.Identity;
 using Stripe;
-//@attribute[Authorize]
 
-Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzIwNzMxMUAzMjM1MmUzMDJlMzBYeXN6Y2dwZHdjektVMTVsQmtvSWplbmJMWVdzc1FkWXpETGFaUzVScHNRPQ==");
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NBaF1cXmhOYVRpR2Nbe05xflVCal5RVAciSV9jS3pTcEVkWX5edHZUQmlfWQ==");
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSyncfusionBlazor();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<ApplicationDbContext>();
-
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<IFileUpload, FileUpload>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+builder.Services.AddScoped<IGraphRepository, GraphRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductPriceRepository, ProductPriceRepository>();
@@ -68,11 +66,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-SeedDatabase();
 app.UseAuthentication();
+
 app.UseAuthorization();
 
+SeedDatabase();
+
 app.MapBlazorHub();
+
 app.MapFallbackToPage("/_Host");
 
 app.Run();

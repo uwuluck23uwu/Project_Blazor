@@ -27,8 +27,31 @@ window.ShowSwal = (type, message) => {
 function ShowDeleteConfirmationModal() {
     $('#DeleteModal').modal('show');
 }
-
 function HideDeleteConfirmationModal() {
     $('#DeleteModal').modal('hide');
 }
 
+window.generatePDF = () => {
+    const { jsPDF } = window.jspdf;
+    const getFormattedDate = () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${day}-${month}-${year}`;
+    };
+    html2canvas(document.querySelector("#pdfContent")).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        const fileName = `report_${getFormattedDate()}.pdf`;
+        pdf.save(fileName);
+    });
+};
+
+document.addEventListener('DOMContentLoaded', function () {
+    AOS.init();
+});

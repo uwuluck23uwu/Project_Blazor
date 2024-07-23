@@ -3,51 +3,115 @@
 @inject NavigationManager _navigationManager
 @attribute [Authorize(Roles = SD.Role_Admin)]
 
-<div>
-    <h4 class="card-title text-info">Order's List</h4>
-    @if (OrderHeaders.Any())
-    {
-        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="Radzen.HorizontalAlign.Left" ShowPagingSummary="true" Data="OrderHeaders" TItem="OrderHeaderDTO" LogicalFilterOperator="LogicalFilterOperator.Or">
-            <Columns>
-                <RadzenDataGridColumn Property="Id" Filterable="false" Title="ID" Frozen="true" Width="80px" />
-                <RadzenDataGridColumn Property="Name" Title="Name" Frozen="true" />
-                <RadzenDataGridColumn Property="PhoneNumber" Title="Phone" />
-                <RadzenDataGridColumn Property="Email" Title="Email" />
-                <RadzenDataGridColumn Property="OrderTotal" Title="Order Total" />
-                <RadzenDataGridColumn Property="OrderDate" Title="Order Date" FormatString="{0:d}" />
-                <RadzenDataGridColumn Property="Status" Title="Status" />
-                <RadzenDataGridColumn Title="Details">
-                    <Template Context="data">
-                        <RadzenButton Click="(args=> OrderDetails(data.Id))" Text="Details" ButtonStyle="ButtonStyle.Success"></RadzenButton>
-                    </Template>
-                </RadzenDataGridColumn>
-            </Columns>
-        </RadzenDataGrid>
-    }
-</div>
+@if (IsLoading)
+{
+    <div class="container1">
+        <div class="spinner"></div>
+    </div>
+}
+else
+{
+    <MudContainer Class="mt-4">
+        <MudGrid>
+            <MudItem xs="12">
+                <MudText Typo="Typo.h4">
+                    Order
+                    <MudAvatar Variant="MudBlazor.Variant.Outlined">@OrderHeaders.ToList().Count</MudAvatar>
+                </MudText>
+            </MudItem>
+        </MudGrid>
+        @if (OrderHeaders.Any())
+        {
+            <MudTable Items="@OrderHeaders" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<OrderHeaderDTO,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1" Style="margin-top: 20px;">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Order</MudText>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>ID</MudTh>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Phone</MudTh>
+                    <MudTh>Email</MudTh>
+                    <MudTh>Order Total</MudTh>
+                    <MudTh>Order Date</MudTh>
+                    <MudTh>Status</MudTh>
+                    <MudTh>Details</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="ID">@context.Id</MudTd>
+                    <MudTd DataLabel="Name">@context.Name</MudTd>
+                    <MudTd DataLabel="Phone">@context.PhoneNumber</MudTd>
+                    <MudTd DataLabel="Email">@context.Email</MudTd>
+                    <MudTd DataLabel="Order Total">@context.OrderTotal</MudTd>
+                    <MudTd DataLabel="Order Date">@context.OrderDate</MudTd>
+                    <MudTd DataLabel="Status">@context.Status</MudTd>
+                    <MudTd DataLabel="Details">
+                        <MudButtonGroup Color="Color.Tertiary" Variant="MudBlazor.Variant.Filled" Size="Size.Large" VerticalAlign="true">
+                            <MudButton OnClick="(args=> OrderDetails(context.Id))">Details</MudButton>
+                        </MudButtonGroup>
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+            <div class="d-flex flex-wrap mt-4">
+                <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+                <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+                <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+                <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+                <MudSpacer />
+                <div style="min-width:200px;">
+                    <MudText Inline="true" Class="align-self-center">Selected1: @selectedItem1?.Name</MudText>
+                </div>
+            </div>
+        }
+    </MudContainer>
+}
 
 @code {
+    private bool hover = true;
+    private bool dense = false;
+    private bool striped = true;
+    private bool bordered = true;
+    private string searchString1 = "";
+    private OrderHeaderDTO selectedItem1 = null;
+    private HashSet<OrderHeaderDTO> selectedItems = new HashSet<OrderHeaderDTO>();
+    private bool FilterFunc1(OrderHeaderDTO element) => FilterFunc(element, searchString1);
     private IEnumerable<OrderHeaderDTO> OrderHeaders { get; set; } = new List<OrderHeaderDTO>();
-    private bool IsLoading { get; set; } = false;
+    public bool Open { get; set; }
+    public string? Message { get; set; }
+    private bool IsLoading { get; set; } = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await LoadOrders();
+            IsLoading = true;
+            StateHasChanged();
+            var orderDTO = await _orderRepository.GetAll();
+            OrderHeaders = orderDTO.Select(u => u.OrderHeader);
+            IsLoading = false;
+            StateHasChanged();
         }
-    }
-    private async Task LoadOrders()
-    {
-        IsLoading = true;
-        StateHasChanged();
-        var orderDTO = await _orderRepository.GetAll();
-        OrderHeaders = orderDTO.Select(u => u.OrderHeader);
-        IsLoading = false;
-        StateHasChanged();
     }
     private void OrderDetails(int id)
     {
-        _navigationManager.NavigateTo("/order/details/" + id);
+        _navigationManager.NavigateTo($"{SD.PAGE_SERVER}/order/details/" + id);
+    }
+    private bool FilterFunc(OrderHeaderDTO element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Status.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.Id} {element.PhoneNumber} {element.OrderTotal} {element.OrderDate}".Contains(searchString))
+            return true;
+        return false;
     }
 }

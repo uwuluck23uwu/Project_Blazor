@@ -1,26 +1,24 @@
 ﻿@page "/role"
 @inject IRoleService roleService
+@attribute [Authorize(Roles = SD.Role_Admin)]
 
-<h3 class="card-title text-primary mb-3 ml-3">Role Management</h3>
+<ToastMudComponent Open="@Open" Message="@Message" Alert="@Alert" Toggle="@(()=>{Open = false; Alert = ""; Message = "";})" />
 @if (IsLoading)
 {
-    <div class="text-center offset-6">
-        <div class="spinner">
-            <div> </div>
-            <div> </div>
-            <div> </div>
-            <div> </div>
-            <div> </div>
-            <div> </div>
-            <div> </div>
-            <div> </div>
-            <div> </div>
-            <div> </div>
-        </div>
+    <div class="container1">
+        <div class="spinner"></div>
     </div>
 }
 else
 {
+    <MudGrid Class="mt-4 mb-4 ml-2">
+        <MudItem xs="12">
+            <MudText Typo="Typo.h4">
+                Role
+                <MudAvatar Variant="MudBlazor.Variant.Outlined">@Roles.ToList().Count</MudAvatar>
+            </MudText>
+        </MudItem>
+    </MudGrid>
     <SfGrid @ref="roleGrid" DataSource="@Roles" AllowPaging="true" AllowFiltering="true" AllowSorting="true" Toolbar="@(new List<string>{"Add","Edit","Update","Delete","Cancel"})">
         <GridEvents OnActionBegin="ActionHandler" TValue="RoleDTO"></GridEvents>
         <GridEditSettings AllowAdding="true" AllowEditing="true" ShowDeleteConfirmDialog="true" AllowDeleting="true"></GridEditSettings>
@@ -42,7 +40,9 @@ else
 }
 
 @code {
-
+    public bool Open { get; set; }
+    public string? Alert { get; set; }
+    public string? Message { get; set; }
     private bool IsLoading { get; set; } = true;
     public SfGrid<RoleDTO> roleGrid;
     private IEnumerable<RoleDTO> Roles { get; set; } = new List<RoleDTO>();
@@ -52,7 +52,6 @@ else
         IsLoading = true;
         StateHasChanged();
         Roles = await roleService.GetAll();
-        await Task.Delay(1000);
         IsLoading = false;
         StateHasChanged();
     }
@@ -62,12 +61,18 @@ else
         {
             if (args.Action == "Add")
             {
+                Open = true;
+                Alert = "Success";
+                Message = "สร้างบทบาทสำเร็จแล้ว";
                 await roleService.Add(args.Data);
                 Roles = await roleService.GetAll();
                 await roleGrid.Refresh();
             }
             if (args.Action == "Edit")
             {
+                Open = true;
+                Alert = "Success";
+                Message = "อัปเดตบทบาทสำเร็จแล้ว";
                 var result = await roleService.Update(args.Data);
                 if (!result)
                 {
@@ -78,6 +83,9 @@ else
         }
         if (args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Delete))
         {
+            Open = true;
+            Alert = "Success";
+            Message = "ลบสำเร็จ";
             await roleService.Delete(args.Data);
             await roleGrid.Refresh();
         }

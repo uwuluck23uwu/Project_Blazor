@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject IProductService _ps
+@inject IJSRuntime _js
 
 @if (IsProcessing)
 {
@@ -9,60 +10,89 @@
 }
 else
 {
-    <div class="container">
-        <div class="row  pb-3 pt-3 backgroundWhite">
-            @foreach (var category in Products.Select(s => s.Category.Name).Distinct())
-            {
-                <h2 class="text-success pl-1"><b>@category</b></h2>
+    <MudCarousel Class="mud-width-full" Style="height:400px;" TData="object" AutoCycle="true">
+        <MudCarouselItem Transition="Transition.Slide">
+            <div class="d-flex" style="height:200%">
+                <img src="images/850425686d00ce732d26774ef2df0bd9_11zon.png" style="height:135%" />
+                <img src="images/5c60cd967254746849cc58780c2529be_11zon.png" style="height:135%" />
+                <img src="images/4fd946fcf43de0a8c4d190fecf64ae0f_11zon.png" style="height:135%" />
+            </div>
+        </MudCarouselItem>
+        <MudCarouselItem Transition="Transition.Slide">
+            <div class="d-flex" style="height:200%">
+                <img src="images/2fcb8bbe9346c0b1bfd5b1d31728dec0_11zon.png" style="height:135%" />
+                <img src="images/8ffdcb7c213e674e8ecbb0c1a4450820_11zon.png" style="height:135%" />
+                <img src="images/e825e0a1d23251cec1ada0e22a83e507_11zon.png" style="height:135%" />
+            </div>
+        </MudCarouselItem>
+        <MudCarouselItem Transition="Transition.Slide">
+            <div class="d-flex" style="height:200%">
+                <img src="images/2047574fee1f71ed7fde631bb0d935ef_11zon.png" style="height:135%" />
+                <img src="images/0291f15d1a81def809a4f796dbd17859_11zon.png" style="height:135%" />
+                <img src="images/44014daadcbf98beb32f4e0841c5348d_11zon.png" style="height:135%" />
+            </div>
+        </MudCarouselItem>
+    </MudCarousel>
+    @foreach (var category in Products.Select(s => s.Category.Name).Distinct())
+    {
+        <MudContainer Fixed="true" Class="mb-4">
+            <MudText Typo="Typo.h4" Class="mt-4 mb-4">@category</MudText>
+            <MudGrid>
                 @foreach (var product in Products.Where(u => u.Category.Name == category))
                 {
-                    <div class="col-lg-4 col-md-6 pb-4 filter">
-                        <div class="card bg-white rounded shadow-sm" style="border:1px solid #222">
-                            <div class="card-body pb-1 row">
-                                <div class="col-8 h5">@product.Name</div>
-                                <div class="col-4 text-end">
-                                    <span class="text-info h4">
-                                        @* @if (product.ProductPrices.Count > 0)
-                                        { *@
-                                            @product.ProductPrices.OrderBy(u => u.Price).FirstOrDefault()?.Price.ToString("c")
-                                        @* } *@
-                                    </span>
+                    <MudItem Class="category_product" xs="12" sm="6" md="4" lg="3" data-aos="fade-up">
+                        <MudCard Outlined="true">
+                            <MudCardHeader>
+                                <CardHeaderAvatar>
+                                    <MudAvatar Color="Color.Secondary">@product.Name[0]</MudAvatar>
+                                </CardHeaderAvatar>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h5">@product.Name</MudText>
+                                    <MudText Typo="Typo.body2">@product.Category.Name</MudText>
+                                </CardHeaderContent>
+                                <CardHeaderActions>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+                                </CardHeaderActions>
+                            </MudCardHeader>
+                            <MudCardMedia Class="category_product_image" Image="@product.ImageUrl" Height="250" />
+                            <MudCardContent>
+                                <MudText Typo="Typo.body1" Style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Description : @product.Description</MudText>
+                                <div class="d-flex flex-column">
+                                    <MudRating Class="mt-2 mb-2" ReadOnly="true" @bind-SelectedValue="selectedVal" FullIcon="@Icons.Material.Filled.Favorite" EmptyIcon="@Icons.Material.Filled.FavoriteBorder" Color="Color.Secondary" Size="Size.Small" />
                                 </div>
-                            </div>
-                            @if (!String.IsNullOrEmpty(product.ImageUrl))
-                            {
-                                <img class="card-img-top img-fluid d-block mx-auto mb-3" src="@product.ImageUrl">
-                            }
-                            <div class="card-body p-1 px-3 row">
-                                <div class="col-6">
-                                    <span class="badge p-2 border w-100 text-dark bg-warning ">@product.Category.Name</span>
+                                <div class="category_product_btn col-12 p-1">
+                                    <NavLink href=@($"{SD.PAGE_CLIENT}/details/{product.Id}") class="btn btn-dark form-control btn-sm p-2" style="height:40px">View Details</NavLink>
                                 </div>
-                                <div class="col-6 border-0">
-                                    <span class="badge p-2 border w-100 bg-info ">@product.Color</span>
-                                </div>
-                                <div class="col-12 pt-2" style="font-size:13px; text-align:justify">
-                                    <p>@((MarkupString)product.Description)</p>
-                                </div>
-                                <div class="col-12 p-1">
-                                    <NavLink href=@($"/details/{product.Id}") class="btn btn-dark form-control btn-sm p-2" style="height:40px">View Details</NavLink>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
                 }
-            }
-        </div>
-    </div>
+            </MudGrid>
+        </MudContainer>
+    }
 }
+<style>
+    .category_product :hover .category_product_image {
+        transform: scale(1.04);
+        transition: transform 0.3s;
+    }
+
+    .category_product_btn:hover {
+        transform: scale(1.04);
+        transition: transform 0.3s;
+    }
+</style>
 
 @code {
     public bool IsProcessing { get; set; } = false;
     public IEnumerable<ProductDTO> Products { get; set; } = new List<ProductDTO>();
+    private int selectedVal = 4;
 
     protected override async Task OnInitializedAsync()
     {
         IsProcessing = true;
         Products = await _ps.GetAll();
+        await _js.InvokeVoidAsync("AOS.init");
         IsProcessing = false;
     }
 }

@@ -13,7 +13,7 @@ namespace WebLucky_Client.Pages.Authentication
         protected async override Task OnInitializedAsync()
         {
             await _authService.Logout();
-            _navigationManager.NavigateTo("/", forceLoad: true);
+            _navigationManager.NavigateTo("/cs66/blazor/s08/BlazorClient/", forceLoad: true);
         }
     }
 }

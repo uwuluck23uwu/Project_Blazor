@@ -1,14 +1,19 @@
 ﻿<AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity.Name
-        <a href="Identity/Account/Logout">Logout</a>
+        <MudItem xs="12" sm="6" md="4" lg="3" Class="d-none d-sm-flex">
+            <MudButtonGroup Color="Color.Tertiary" Variant="MudBlazor.Variant.Filled" Size="Size.Medium" Style="margin-left: -100px">
+                <MudAvatar Style="margin-right: 20px">
+                    <MudImage Src="@($"{SD.PAGE_SERVER}/default.png")" />
+                </MudAvatar>
+                <MudText Typo="Typo.h6">MR.@context.User.Identity.Name</MudText>
+                <MudButton Style="margin-left: 20px;" Href="Identity/Account/Logout">Logout</MudButton>
+            </MudButtonGroup>
+        </MudItem>
     </Authorized>
     <NotAuthorized>
-        <a href="Identity/Account/Register">Register</a>
-        <a href="Identity/Account/Login">Login</a>
+        <MudButtonGroup Variant="MudBlazor.Variant.Text" Class="ml-auto" Style="color: #EDE7F6">
+            <MudButton Href="Identity/Account/Register">Register</MudButton>
+            <MudButton Href="Identity/Account/Login">Login</MudButton>
+        </MudButtonGroup>
     </NotAuthorized>
 </AuthorizeView>
-
-@code {
-
-}

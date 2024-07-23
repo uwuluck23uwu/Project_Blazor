@@ -29,11 +29,11 @@ namespace WebLucky_Client.Pages.Authentication
                 ReturnUrl = queryParam["returnUrl"];
                 if (string.IsNullOrEmpty(ReturnUrl))
                 {
-                    _navigationManager.NavigateTo("/");
+                    _navigationManager.NavigateTo("/cs66/blazor/s08/BlazorClient/");
                 }
                 else
                 {
-                    _navigationManager.NavigateTo("/" + ReturnUrl);
+                    _navigationManager.NavigateTo("/cs66/blazor/s08/BlazorClient/" + ReturnUrl);
                 }
             }
             else

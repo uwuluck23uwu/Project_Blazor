@@ -1,0 +1,489 @@
+﻿ @page "/graph"
+@inject IJSRuntime _js
+@inject IOrderRepository _or
+@inject IGraphRepository _gr
+@attribute [Authorize(Roles = SD.Role_Admin)]
+
+<ToastMudComponent Open="@Open" Message="@Message" Alert="@Alert" Toggle="@(()=>{Open = false; Alert = ""; Message = "";})" />
+@if (IsLoading)
+{
+    <div class="container1">
+        <div class="spinner"></div>
+    </div>  
+}
+else
+{
+    <MudTabs Elevation="2" Rounded="true" Color="@Color.Dark" PanelClass="pa-6" Class="mt-4">
+        <div id="pdfContent">
+            <MudTabPanel Text="Daily">
+                <div class="row">
+                    <MudItem>
+                        <MudItem Class="graph_muditem">
+                            <MudText Class="ml-6">
+                                รายได้ภายในวันนี้
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <MudCard Outlined="true">
+                                <MudCardHeader>
+                                    <CardHeaderAvatar>
+                                        <MudAvatar Color="Color.Secondary">
+                                            <MudImage Src="@($"{SD.PAGE_SERVER}/default1.png")" />
+                                        </MudAvatar>
+                                    </CardHeaderAvatar>
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h5">Graph รายได้ในวันนี้</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                                <MudChart ChartType="ChartType.Line" ChartSeries="@SeriesDaily" XAxisLabels="@Daily" Width="100%" Height="600px" />
+                            </MudCard>
+                        </MudItem>
+                    </MudItem>
+                </div>
+                <div class="row mt-6">
+                    <MudItem xs="12" sm="12" md="6" lg="6" Class="mr-auto">
+                        <MudItem Class="graph_muditem">
+                            <MudText Class="ml-6">
+                                ยอดการสั่งซื้อจากจังหวัดต่างๆ
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <MudPaper Class="pa-4">
+                                <MudChart ChartType="ChartType.Donut" Width="100%" Height="100%" InputData="@cityDailyData" InputLabels="@cityDailyLabels" />
+                            </MudPaper>
+                        </MudItem>
+                    </MudItem>
+                    <MudItem xs="12" sm="12" md="6" lg="6" Class="mr-auto">
+                        <MudItem Class="graph_muditem">
+                            <MudText Class="ml-6">
+                                สถานะต่างๆของ Order
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <MudPaper Class="pa-4">
+                                <MudChart ChartType="ChartType.Donut" Width="100%" Height="100%" InputData="@statusDailyData" InputLabels="@statusDailyLabels" />
+                            </MudPaper>
+                        </MudItem>
+                    </MudItem>
+                </div>
+            </MudTabPanel>
+            <MudTabPanel Text="Week">
+                <div class="row">
+                    <MudItem>
+                        <MudItem Class="graph_muditem">
+                            <MudText Class="ml-6">
+                                รายได้ภายในสัปดาห์นี้
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <MudCard Outlined="true">
+                                <MudCardHeader>
+                                    <CardHeaderAvatar>
+                                        <MudAvatar Color="Color.Secondary">
+                                            <MudImage Src="@($"{SD.PAGE_SERVER}/default1.png")" />
+                                        </MudAvatar>
+                                    </CardHeaderAvatar>
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h5">Graph รายได้ในสัปดาห์นี้</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                                <MudChart ChartType="ChartType.Line" ChartSeries="@SeriesWeek" XAxisLabels="@Week" Width="100%" Height="600px" />
+                            </MudCard>
+                        </MudItem>
+                    </MudItem>
+                </div>
+                <div class="row mt-6">
+                    <MudItem xs="12" sm="12" md="6" lg="6" Class="mr-auto">
+                        <MudItem Class="graph_muditem">
+                            <MudText Class="ml-6">
+                                ยอดการสั่งซื้อจากจังหวัดต่างๆ
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <MudPaper Class="pa-4">
+                                <MudChart ChartType="ChartType.Donut" InputData="@cityWeekData" InputLabels="@cityWeekLabels" Width="100%" Height="100%" />
+                            </MudPaper>
+                        </MudItem>
+                    </MudItem>
+                    <MudItem xs="12" sm="12" md="6" lg="6" Class="mr-auto">
+                        <MudItem Class="graph_muditem">
+                            <MudText Class="ml-6">
+                                สถานะต่างๆของ Order
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <MudPaper Class="pa-4">
+                                <MudChart ChartType="ChartType.Donut" InputData="@statusWeekData" InputLabels="@statusWeekLabels" Width="100%" Height="100%" />
+                            </MudPaper>
+                        </MudItem>
+                    </MudItem>
+                </div>
+            </MudTabPanel>
+            <MudTabPanel Text="Monthly">
+                <div class="row">
+                    <MudItem>
+                        <MudItem Class="graph_muditem">
+                            <MudText Class="ml-6">
+                                รายได้ภายในเดือนนี้
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <MudCard Outlined="true">
+                                <MudCardHeader>
+                                    <CardHeaderAvatar>
+                                        <MudAvatar Color="Color.Secondary">
+                                            <MudImage Src="@($"{SD.PAGE_SERVER}/default1.png")" />
+                                        </MudAvatar>
+                                    </CardHeaderAvatar>
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h5">Graph รายได้ในดือนนี้</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                                <MudChart ChartType="ChartType.Line" ChartSeries="@SeriesMonthly" XAxisLabels="@Monthly" Width="100%" Height="600px" />
+                            </MudCard>
+                        </MudItem>
+                    </MudItem>
+                </div>
+                <div class="row mt-6">
+                    <MudItem xs="12" sm="12" md="6" lg="6" Class="mr-auto">
+                        <MudItem Class="graph_muditem">
+                            <MudText Class="ml-6">
+                                ยอดการสั่งซื้อจากจังหวัดต่างๆ
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <MudPaper Class="pa-4">
+                                <MudChart ChartType="ChartType.Donut" InputData="@cityMonthlyData" InputLabels="@cityMonthlyLabels" Width="100%" Height="100%" />
+                            </MudPaper>
+                        </MudItem>
+                    </MudItem>
+                    <MudItem xs="12" sm="12" md="6" lg="6" Class="mr-auto">
+                        <MudItem Class="graph_muditem">
+                            <MudText Class="ml-6">
+                                สถานะต่างๆของ Order
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <MudPaper Class="pa-4">
+                                <MudChart ChartType="ChartType.Donut" InputData="@statusMonthlyData" InputLabels="@statusMonthlyLabels" Width="100%" Height="100%" />
+                            </MudPaper>
+                        </MudItem>
+                    </MudItem>
+                </div>
+            </MudTabPanel>
+            <MudTabPanel Text="Yearly">
+                <div class="row">
+                    <MudItem>
+                        <MudItem Class="graph_muditem">
+                            <MudText Class="ml-6">
+                                รายได้ภายในปีนี้
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <MudCard Outlined="true">
+                                <MudCardHeader>
+                                    <CardHeaderAvatar>
+                                        <MudAvatar Color="Color.Secondary">
+                                            <MudImage Src="@($"{SD.PAGE_SERVER}/default1.png")" />
+                                        </MudAvatar>
+                                    </CardHeaderAvatar>
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h5">Graph รายได้ในปีนี้</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                                <MudChart ChartType="ChartType.Line" ChartSeries="@SeriesYearly" XAxisLabels="@Yearly" Width="100%" Height="600px" />
+                            </MudCard>
+                        </MudItem>
+                    </MudItem>
+                </div>
+                <div class="row mt-6">
+                    <MudItem xs="12" sm="12" md="6" lg="6" Class="mr-auto">
+                        <MudItem Class="graph_muditem">
+                            <MudText Class="ml-6">
+                                ยอดการสั่งซื้อจากจังหวัดต่างๆ
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <MudPaper Class="pa-4">
+                                <MudChart ChartType="ChartType.Donut" InputData="@cityYearlyData" InputLabels="@cityYearlyLabels" Width="100%" Height="100%" />
+                            </MudPaper>
+                        </MudItem>
+                    </MudItem>
+                    <MudItem xs="12" sm="12" md="6" lg="6" Class="mr-auto">
+                        <MudItem Class="graph_muditem">
+                            <MudText Class="ml-6">
+                                สถานะต่างๆของ Order
+                            </MudText>
+                        </MudItem>
+                        <MudItem>
+                            <MudPaper Class="pa-4">
+                                <MudChart ChartType="ChartType.Donut" InputData="@statusYearlyData" InputLabels="@statusYearlyLabels" Width="100%" Height="100%" />
+                            </MudPaper>
+                        </MudItem>
+                    </MudItem>
+                </div>
+            </MudTabPanel>
+        </div>
+    </MudTabs>
+    <MudItem xs="12" sm="12" md="12" lg="12" Class="ml-6 mb-6">
+        <MudButtonGroup Color="Color.Dark" Variant="MudBlazor.Variant.Filled" Size="Size.Large" Class="mt-5 ml-auto">
+            <MudButton @onclick="GeneratePDF">
+                <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.PictureAsPdf" />
+                Print PDF
+            </MudButton>
+        </MudButtonGroup>
+    </MudItem>
+}
+
+@code {
+    private List<ChartSeries> SeriesDaily = new List<ChartSeries>();
+    private List<ChartSeries> SeriesWeek = new List<ChartSeries>();
+    private List<ChartSeries> SeriesMonthly = new List<ChartSeries>();
+    private List<ChartSeries> SeriesYearly = new List<ChartSeries>();
+    private string[] Daily = new string[24];
+    private string[] Week = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+    private string[] Monthly = new string[31];
+    private string[] Yearly = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+    double[] cityDailyData = { };
+    string[] cityDailyLabels = { };
+    double[] cityWeekData = { };
+    string[] cityWeekLabels = { };
+    double[] cityMonthlyData = { };
+    string[] cityMonthlyLabels = { };
+    double[] cityYearlyData = { };
+    string[] cityYearlyLabels = { };
+    double[] statusDailyData = { };
+    string[] statusDailyLabels = { };
+    double[] statusWeekData = { };
+    string[] statusWeekLabels = { };
+    double[] statusMonthlyData = { };
+    string[] statusMonthlyLabels = { };
+    double[] statusYearlyData = { };
+    string[] statusYearlyLabels = { };
+    public bool Open { get; set; }
+    public string? Alert { get; set; }
+    public string? Message { get; set; }
+    private bool IsLoading { get; set; } = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            IsLoading = true;
+            StateHasChanged();
+            await LoadGraph();
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+    private async Task LoadGraph()
+    {
+        var orders = await _or.GetAll();
+        for (int i = 0; i < 24; i++) { Daily[i] = i < 10 ? $"0{i}" : $"{i}"; }
+        var wmy = await _gr.SeriesWMY();
+        var dailyRevenue = wmy.dailyRevenue;
+        var weeklyRevenue = wmy.weeklyRevenue;
+        var monthlyRevenue = wmy.monthlyRevenue;
+        var yearlyRevenue = wmy.yearlyRevenue;
+        SeriesDaily.Add(new ChartSeries()
+        {
+            Name = "Daily Revenue",
+            Data = dailyRevenue
+        });
+        SeriesWeek.Add(new ChartSeries()
+        {
+            Name = "Weekly Revenue",
+            Data = weeklyRevenue
+        });
+        SeriesMonthly.Add(new ChartSeries()
+        {
+            Name = "Monthly Revenue",
+            Data = monthlyRevenue
+        });
+        SeriesYearly.Add(new ChartSeries()
+        {
+            Name = "Yearly Revenue",
+            Data = yearlyRevenue
+        });
+        for (int i = 1; i <= 31; i++) { Monthly[i - 1] = (i < 10 ? $"0{i}" : $"{i}"); }
+
+        var dailyCityOrderCount = orders.GroupBy(o => new
+        {
+            o.OrderHeader.OrderDate.Date, o.OrderHeader.City
+        }).Select(g => new
+        {
+            Date = g.Key.Date,
+            City = g.Key.City,
+            Count = g.Count()
+        }).ToList();
+        var latestCityDailyDate = dailyCityOrderCount.Any()
+        ? dailyCityOrderCount.Max(d => d.Date)
+        : (DateTime?)null;
+        var latestDateCityDailyCounts = latestCityDailyDate.HasValue
+        ? dailyCityOrderCount.Where(d => d.Date == latestCityDailyDate).OrderByDescending(d => d.Count).ToList<dynamic>()
+        : new List<dynamic>();
+        cityDailyData = latestDateCityDailyCounts.Select(c => (double)c.Count).ToArray();
+        cityDailyLabels = latestDateCityDailyCounts.Select(c => (string)c.City).ToArray();
+
+        var dailyStatusOrderCount = orders.GroupBy(o => new
+        {
+            o.OrderHeader.OrderDate.Date,
+            o.OrderHeader.Status }).Select(g => new
+        {
+            Date = g.Key.Date,
+            Status = g.Key.Status,
+            Count = g.Count()
+        }).ToList();
+        var latestStatusDailyDate = dailyStatusOrderCount.Any()
+        ? dailyStatusOrderCount.Max(d => d.Date)
+        : (DateTime?)null;
+        var latestDateStatusDailyCounts = latestStatusDailyDate.HasValue
+        ? dailyStatusOrderCount.Where(d => d.Date == latestStatusDailyDate).OrderByDescending(d => d.Count).ToList<dynamic>()
+        : new List<dynamic>();
+        statusDailyData = latestDateStatusDailyCounts.Select(s => (double)s.Count).ToArray();
+        statusDailyLabels = latestDateStatusDailyCounts.Select(s => (string)s.Status).ToArray();
+
+        var weeklyCityOrderCount = orders.GroupBy(o => new
+        {
+            Week = CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(o.OrderHeader.OrderDate,
+            CalendarWeekRule.FirstDay, DayOfWeek.Monday), Year = o.OrderHeader.OrderDate.Year,
+            o.OrderHeader.City
+        }).Select(g => new
+        {
+            Week = g.Key.Week,
+            Year = g.Key.Year,
+            City = g.Key.City,
+            Count = g.Count()
+        }).ToList();
+        var latestCityWeekYear = weeklyCityOrderCount.Any()
+        ? weeklyCityOrderCount.Max(d => d.Year)
+        : (int?)null;
+        var latestCityWeek = latestCityWeekYear.HasValue
+        ? weeklyCityOrderCount.Where(d => d.Year == latestCityWeekYear).Max(d => d.Week)
+        : (int?)null;
+        var latestWeekCityCounts = latestCityWeekYear.HasValue && latestCityWeek.HasValue
+        ? weeklyCityOrderCount.Where(d => d.Year == latestCityWeekYear && d.Week == latestCityWeek).OrderByDescending(d => d.Count).ToList<dynamic>()
+        : new List<dynamic>();
+        cityWeekData = latestWeekCityCounts.Select(c => (double)c.Count).ToArray();
+        cityWeekLabels = latestWeekCityCounts.Select(c => (string)c.City).ToArray();
+
+        var weeklyStatusOrderCount = orders.GroupBy(o => new
+        {
+            Week = CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(o.OrderHeader.OrderDate,
+            CalendarWeekRule.FirstDay,
+            DayOfWeek.Monday),
+            Year = o.OrderHeader.OrderDate.Year,
+            o.OrderHeader.Status
+        }).Select(g => new
+        {
+            Week = g.Key.Week,
+            Year = g.Key.Year,
+            Status = g.Key.Status,
+            Count = g.Count()
+        }).ToList();
+        var latestStatusWeekYear = weeklyStatusOrderCount.Any()
+        ? weeklyStatusOrderCount.Max(d => d.Year)
+        : (int?)null;
+        var latestStatusWeek = latestStatusWeekYear.HasValue
+        ? weeklyStatusOrderCount.Where(d => d.Year == latestStatusWeekYear).Max(d => d.Week)
+        : (int?)null;
+        var latestWeekStatusCounts = latestStatusWeekYear.HasValue && latestStatusWeek.HasValue
+        ? weeklyStatusOrderCount.Where(d => d.Year == latestStatusWeekYear && d.Week == latestStatusWeek).OrderByDescending(d => d.Count).ToList<dynamic>()
+        : new List<dynamic>();
+        statusWeekData = latestWeekStatusCounts.Select(s => (double)s.Count).ToArray();
+        statusWeekLabels = latestWeekStatusCounts.Select(s => (string)s.Status).ToArray();
+
+        var monthlyCityOrderCount = orders.GroupBy(o => new
+        {
+            Year = o.OrderHeader.OrderDate.Year,
+            Month = o.OrderHeader.OrderDate.Month,
+            o.OrderHeader.City
+        }).Select(g => new
+        {
+            Year = g.Key.Year,
+            Month = g.Key.Month,
+            City = g.Key.City,
+            Count = g.Count()
+        }).ToList();
+        var latestCityMonthYear = monthlyCityOrderCount.Any()
+        ? monthlyCityOrderCount.Max(d => d.Year)
+        : (int?)null;
+        var latestCityMonth = latestCityMonthYear.HasValue
+        ? monthlyCityOrderCount.Where(d => d.Year == latestCityMonthYear).Max(d => d.Month)
+        : (int?)null;
+        var latestMonthCityCounts = latestCityMonthYear.HasValue && latestCityMonth.HasValue
+        ? monthlyCityOrderCount.Where(d => d.Year == latestCityMonthYear && d.Month == latestCityMonth).OrderByDescending(d => d.Count).ToList<dynamic>()
+        : new List<dynamic>();
+        cityMonthlyData = latestMonthCityCounts.Select(c => (double)c.Count).ToArray();
+        cityMonthlyLabels = latestMonthCityCounts.Select(c => (string)c.City).ToArray();
+
+        var monthlyStatusOrderCount = orders.GroupBy(o => new
+        {
+            Year = o.OrderHeader.OrderDate.Year,
+            Month = o.OrderHeader.OrderDate.Month,
+            o.OrderHeader.Status
+        }).Select(g => new
+        {
+            Year = g.Key.Year,
+            Month = g.Key.Month,
+            Status = g.Key.Status,
+            Count = g.Count()
+        }).ToList();
+        var latestStatusMonthYear = monthlyStatusOrderCount.Any()
+        ? monthlyStatusOrderCount.Max(d => d.Year)
+        : (int?)null;
+        var latestStatusMonth = latestStatusMonthYear.HasValue
+        ? monthlyStatusOrderCount.Where(d => d.Year == latestStatusMonthYear).Max(d => d.Month)
+        : (int?)null;
+        var latestMonthStatusCounts = latestStatusMonthYear.HasValue && latestStatusMonth.HasValue
+        ? monthlyStatusOrderCount.Where(d => d.Year == latestStatusMonthYear && d.Month == latestStatusMonth).OrderByDescending(d => d.Count).ToList<dynamic>()
+        : new List<dynamic>();
+        statusMonthlyData = latestMonthStatusCounts.Select(s => (double)s.Count).ToArray();
+        statusMonthlyLabels = latestMonthStatusCounts.Select(s => (string)s.Status).ToArray();
+
+        var yearlyCityOrderCount = orders.GroupBy(o => new
+        {
+            Year = o.OrderHeader.OrderDate.Year,
+            o.OrderHeader.City
+        }).Select(g => new
+        {
+            Year = g.Key.Year,
+            City = g.Key.City,
+            Count = g.Count()
+        }).ToList();
+        var latestCityYear = yearlyCityOrderCount.Any()
+        ? yearlyCityOrderCount.Max(d => d.Year)
+        : (int?)null;
+        var latestYearCityCounts = latestCityYear.HasValue
+        ? yearlyCityOrderCount.Where(d => d.Year == latestCityYear).OrderByDescending(d => d.Count).ToList<dynamic>()
+        : new List<dynamic>();
+        cityYearlyData = latestYearCityCounts.Select(c => (double)c.Count).ToArray();
+        cityYearlyLabels = latestYearCityCounts.Select(c => (string)c.City).ToArray();
+
+        var yearlyStatusOrderCount = orders.GroupBy(o => new
+        {
+            Year = o.OrderHeader.OrderDate.Year,
+            o.OrderHeader.Status
+        }).Select(g => new
+        {
+            Year = g.Key.Year,
+            Status = g.Key.Status,
+            Count = g.Count()
+        }).ToList();
+        var latestStatusYear = yearlyStatusOrderCount.Any()
+        ? yearlyStatusOrderCount.Max(d => d.Year)
+        : (int?)null;
+        var latestYearStatusCounts = latestStatusYear.HasValue
+        ? yearlyStatusOrderCount.Where(d => d.Year == latestStatusYear).OrderByDescending(d => d.Count).ToList<dynamic>()
+        : new List<dynamic>();
+        statusYearlyData = latestYearStatusCounts.Select(s => (double)s.Count).ToArray();
+        statusYearlyLabels = latestYearStatusCounts.Select(s => (string)s.Status).ToArray();
+    }
+    private async Task GeneratePDF()
+    {
+        Open = true;
+        Alert = "Success";
+        Message = "กำลังเริ่มการดาวโหลด";
+        await _js.InvokeVoidAsync("generatePDF");
+    }
+}

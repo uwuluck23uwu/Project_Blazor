@@ -1,9 +1,67 @@
 ﻿@page "/"
+@inject IJSRuntime _js
+@inject IProductRepository _pr
+@inject NavigationManager _nm
 
-<PageTitle>Index</PageTitle>
+@if (IsLoading)
+{
+    <div class="container1">
+        <div class="spinner"></div>
+    </div>
+}
+else
+{
+    @foreach (var category in Products.Select(s => s.Category.Name).Distinct())
+    {
+        <MudContainer Fixed="true" Class="mb-4">
+            <MudText Typo="Typo.h4" Class="mt-4 mb-4">@category</MudText>
+            <MudGrid>
+                @foreach (var product in Products.Where(u => u.Category.Name == category))
+                {
+                    <MudItem Class="category_product" xs="12" sm="6" md="4" lg="3" data-aos="fade-up">
+                        <MudCard Outlined="true">
+                            <MudCardHeader>
+                                <CardHeaderAvatar>
+                                    <MudAvatar Color="Color.Secondary">@product.Name[0]</MudAvatar>
+                                </CardHeaderAvatar>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h5">@product.Name</MudText>
+                                    <MudText Typo="Typo.body2">@product.Category.Name</MudText>
+                                </CardHeaderContent>
+                                <CardHeaderActions>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+                                </CardHeaderActions>
+                            </MudCardHeader>
+                            <MudCardMedia Class="category_product_image" Image="@($"{SD.PAGE_SERVER}{SD.PRODUCTIMG}/{product.ImageUrl}")" Height="250" />
+                            <MudCardContent>
+                                <MudText Typo="Typo.body1">Description : @product.Description</MudText>
+                                <div class="d-flex flex-column">
+                                    <MudCheckBox @bind-Value="@product.ShopFavorites" Label="Shop Favorites" LabelPosition="LabelPosition.End" Color="Color.Secondary" Disabled="true" Style="margin-left: 0;"></MudCheckBox>
+                                    <MudCheckBox @bind-Value="@product.CustomerFavorites" Label="Customer Favorites" LabelPosition="LabelPosition.End" Color="Color.Secondary" Disabled="true" Style="margin-left: 0;"></MudCheckBox>
+                                </div>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudContainer>
+    }
+}
 
-<h1>Hello, world!</h1>
+@code {
+    private IEnumerable<ProductDTO> Products { get; set; } = new List<ProductDTO>();
+    private bool IsLoading { get; set; } = true;
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            IsLoading = true;
+            StateHasChanged();
+            Products = await _pr.GetAll();
+            await _js.InvokeVoidAsync("AOS.init");
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+}

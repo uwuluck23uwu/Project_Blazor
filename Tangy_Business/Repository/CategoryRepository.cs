@@ -11,7 +11,6 @@ namespace Tangy_Business.Repository
     {
         private readonly ApplicationDbContext _db;
         private readonly IMapper _mp;
-
         public CategoryRepository(ApplicationDbContext db, IMapper mp)
         {
             _db = db;
@@ -24,14 +23,12 @@ namespace Tangy_Business.Repository
             category.CreatedDate = DateTime.Now;
             _db.Categories.Add(category);
             await _db.SaveChangesAsync();
-
             return new CategoryDTO()
             {
                 Id = category.Id,
                 Name = category.Name
             };
         }
-
         public async Task<int> Delete(int id)
         {
             var obj = await _db.Categories.FirstOrDefaultAsync(u => u.Id == id);
@@ -42,7 +39,6 @@ namespace Tangy_Business.Repository
             }
             return 0;
         }
-
         public async Task<CategoryDTO> Get(int id)
         {
             var obj = await _db.Categories.FirstOrDefaultAsync(u => u.Id == id);
@@ -52,12 +48,10 @@ namespace Tangy_Business.Repository
             }
             return new CategoryDTO();
         }
-
         public async Task<IEnumerable<CategoryDTO>> GetAll()
         {
             return _mp.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(_db.Categories);
         }
-
         public async Task<CategoryDTO> Update(CategoryDTO objDTO)
         {
             var objFromDb = await _db.Categories.FirstOrDefaultAsync(u => u.Id == objDTO.Id);

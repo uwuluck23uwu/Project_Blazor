@@ -48,7 +48,8 @@ public class ProductRepository : IProductRepository
 
     public async Task<IEnumerable<ProductDTO>> GetAll()
     {
-        return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products.Include(u => u.Category).Include(u => u.ProductPrices));
+        var test = await _db.Products.Include(u => u.Category).Include(u => u.ProductPrices).ToListAsync();
+        return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(test);
     }
 
     public async Task<ProductDTO> Update(ProductDTO objDTO)
